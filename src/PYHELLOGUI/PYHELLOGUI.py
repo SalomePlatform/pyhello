@@ -55,9 +55,9 @@ class MyDialog(qt.QDialog):
 
           self.hb = qt.QHBox(self)
           c = qt.QPushButton("OK", self.hb)
-          self.connect(c, qt.SIGNAL('clicked()'), self.accept)
+          self.connect(c, qt.SIGNAL('clicked()'), self, SLOT('accept()'))
           d = qt.QPushButton("CANCEL", self.hb)
-          self.connect(d, qt.SIGNAL('clicked()'), self.reject)
+          self.connect(d, qt.SIGNAL('clicked()'), self, SLOT('reject()'))
 
 def ExecPYHELLO(ws):
     # Modal dialog, parent desktop
