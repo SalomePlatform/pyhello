@@ -1,0 +1,17 @@
+#ifndef __PYHELLO_GEN__
+#define __PYHELLO_GEN__
+
+#include "SALOME_Component.idl"
+#include "SALOME_Exception.idl"
+
+module PYHELLO_ORB
+{
+  interface PYHELLO_Gen : Engines::Component
+  {
+     string makeBanner(in string name)
+         raises (SALOME::SALOME_Exception);
+  };
+};
+
+#endif
+

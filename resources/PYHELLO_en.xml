@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE application PUBLIC "" "desktop.dtd">
+<application title="PYHELLO component" date="9/12/2001" author="C Caremoli" appId="PYHELLO" >
+<desktop>
+<!-- ### MENUBAR ###  -->
+<menubar>
+ <menu-item label-id="PYHELLO" item-id="90" pos-id="3">
+  <popup-item item-id="941" label-id="Lancer IHM" icon-id="" tooltip-id="Lancer IHM PYHELLO" accel-id="" toggle-id="" execute-action=""/>
+ </menu-item>
+</menubar>
+<!-- ### TOOLBAR ###  -->
+<toolbar label-id="PYHELLO">
+ <toolbutton-item item-id="941" label-id="Lancer IHM" icon-id="ExecPYHELLO.png" tooltip-id="Lancer IHM PYHELLO" accel-id="" toggle-id="" execute-action=""/>
+</toolbar>
+</desktop>
+</application>
+

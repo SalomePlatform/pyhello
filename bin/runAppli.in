@@ -1,0 +1,8 @@
+#!/bin/sh
+
+export KERNEL_ROOT_DIR=@KERNEL_ROOT_DIR@
+export PYHELLO_ROOT_DIR=@prefix@
+
+python -i $PYHELLO_ROOT_DIR/bin/salome/runSalome.py --modules=PYHELLO --xterm --containers=cpp,python --killall
+
+
