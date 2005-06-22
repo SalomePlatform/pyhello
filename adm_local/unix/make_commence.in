@@ -61,6 +61,9 @@ QT_MT_LIBS = @QT_MT_LIBS@
 MOC = @MOC@
 UIC = @UIC@
 
+# msg2qm
+
+MSG2QM = @MSG2QM@
 
 #QWT
 
