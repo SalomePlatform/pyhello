@@ -8,7 +8,6 @@ WORKSPACE=None
 import SalomePyQt
 # Communication with Salome : desktop, signal and slots
 sgPyQt=SalomePyQt.SalomePyQt()
-desktop=sgPyQt.getDesktop()
 
 # LifeCycle and component PYHELLO
 import salome
@@ -61,6 +60,7 @@ class MyDialog(qt.QDialog):
 
 def ExecPYHELLO(ws):
     # Modal dialog, parent desktop
+    desktop=sgPyQt.getDesktop()
     w=MyDialog(desktop,"Name",1)
     # Wait answer
     r=w.exec_loop()
