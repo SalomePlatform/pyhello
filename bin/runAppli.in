@@ -3,6 +3,40 @@
 export KERNEL_ROOT_DIR=@KERNEL_ROOT_DIR@
 export PYHELLO_ROOT_DIR=@prefix@
 
-python -i $PYHELLO_ROOT_DIR/bin/salome/runSalome.py --modules=PYHELLO --xterm --containers=cpp,python --killall
+searchFreePort() {
+    echo -n "Searching for a free port for naming service: "
+    export NSPORT=2810
+    local limit=$NSPORT
+    let limit=limit+100
+    while [ 1 ]
+    do
+        aRes=`netstat -ltn | grep -E :${NSPORT}`
+        if [ -z "$aRes" ]; then
+            echo ${NSPORT} - Ok
+            local myhost=`hostname`
+            export OMNIORB_CONFIG=${HOME}/.omniORB_${myhost}_${NSPORT}.cfg
+            local initref="NameService=corbaname::"`hostname`":$NSPORT"
+            if [[ `python -c "import CORBA; print CORBA.ORB_ID"` = "omniORB4" ]]; then
+                echo "InitRef = $initref" > $OMNIORB_CONFIG
+            else
+                echo "ORBInitRef $initref" > $OMNIORB_CONFIG
+            fi
+            break
+        fi
+        echo -n "${NSPORT} "
+        if [[ $NSPORT -eq $limit ]] ; then
+            echo
+            echo "Can't find a free port to launch omniNames"
+            echo "Try to kill the running servers and then launch SALOME again."
+            exit
+        fi
+        let NSPORT=NSPORT+1
+    done
+}
+
+searchFreePort
+
+
+${KERNEL_ROOT_DIR}/bin/salome/envSalome.py python -i $PYHELLO_ROOT_DIR/bin/salome/myrunSalome.py --modules=PYHELLO --containers=cpp,python --killall
 
 

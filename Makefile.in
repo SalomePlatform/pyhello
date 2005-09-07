@@ -18,7 +18,7 @@ SUBDIRS = idl src
 RESOURCES_FILES = PYHELLOCatalog.xml PYHELLO.png PYHELLO_en.xml \
                   ExecPYHELLO.png
 
-BIN_SCRIPT= VERSION runAppli runSalome.py
+BIN_SCRIPT= VERSION runAppli myrunSalome.py
 
 # copy header files in common directory
 ifeq ($(HAVE_SSTREAM),yes)
