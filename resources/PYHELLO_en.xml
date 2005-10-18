@@ -2,16 +2,31 @@
 <!DOCTYPE application PUBLIC "" "desktop.dtd">
 <application title="PYHELLO component" date="9/12/2001" author="C Caremoli" appId="PYHELLO" >
 <desktop>
+
 <!-- ### MENUBAR ###  -->
 <menubar>
  <menu-item label-id="PYHELLO" item-id="90" pos-id="3">
-  <popup-item item-id="941" label-id="Lancer IHM" icon-id="" tooltip-id="Lancer IHM PYHELLO" accel-id="" toggle-id="" execute-action=""/>
+  <popup-item item-id="941" label-id="HELLO" icon-id="" tooltip-id="Shows sample dialog box" accel-id="" toggle-id="" execute-action=""/>
+  <separator/>
+  <popup-item item-id="942" label-id="Create object" icon-id="" tooltip-id="Creates and publishes an object" accel-id="" toggle-id="" execute-action=""/>
  </menu-item>
 </menubar>
-<!-- ### TOOLBAR ###  -->
+
+<!-- ### TOOLBARS ###  -->
 <toolbar label-id="PYHELLO">
- <toolbutton-item item-id="941" label-id="Lancer IHM" icon-id="ExecPYHELLO.png" tooltip-id="Lancer IHM PYHELLO" accel-id="" toggle-id="" execute-action=""/>
+ <toolbutton-item item-id="941" label-id="HELLO" icon-id="ExecPYHELLO.png" tooltip-id="Shows sample dialog box" accel-id="" toggle-id="" execute-action=""/>
 </toolbar>
+
+<!-- ### POPUP MENUS ###  -->
+<popupmenu label-id="Popup for ObjectBrowser" context-id="ObjectBrowser" parent-id="" object-id="1000">
+   <popup-item item-id="951" pos-id="" label-id="Delete all" icon-id="" tooltip-id="Removes all children" accel-id="" toggle-id="" execute-action=""/>
+</popupmenu>
+
+<popupmenu label-id="Popup for ObjectBrowser" context-id="ObjectBrowser" parent-id="" object-id="1010">
+   <popup-item item-id="952" pos-id="" label-id="Show me" icon-id="" tooltip-id="Shows an object's name" accel-id="" toggle-id="" execute-action=""/>
+   <popup-item item-id="953" pos-id="" label-id="Delete me" icon-id="" tooltip-id="Removes an object from the study" accel-id="" toggle-id="" execute-action=""/>
+</popupmenu>
+
 </desktop>
 </application>
 

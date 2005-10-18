@@ -2,11 +2,12 @@
 #define __PYHELLO_GEN__
 
 #include "SALOME_Component.idl"
+#include "SALOMEDS.idl"
 #include "SALOME_Exception.idl"
 
 module PYHELLO_ORB
 {
-  interface PYHELLO_Gen : Engines::Component
+  interface PYHELLO_Gen : Engines::Component, SALOMEDS::Driver
   {
      string makeBanner(in string name)
          raises (SALOME::SALOME_Exception);
@@ -14,4 +15,3 @@ module PYHELLO_ORB
 };
 
 #endif
-
