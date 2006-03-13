@@ -125,6 +125,26 @@ CHECK_MSG2QM
 
 echo
 echo ---------------------------------------------
+echo Testing GUI
+echo ---------------------------------------------
+echo
+
+CHECK_SALOME_GUI
+
+echo
+echo ---------------------------------------------
+echo Testing full GUI
+echo ---------------------------------------------
+echo
+
+CHECK_CORBA_IN_GUI
+if test "x${CORBA_IN_GUI}" != "xyes"; then
+  echo "failed : For configure PYHELLO1 module necessary full GUI !"
+  exit
+fi
+
+echo
+echo ---------------------------------------------
 echo Testing Kernel
 echo ---------------------------------------------
 echo
