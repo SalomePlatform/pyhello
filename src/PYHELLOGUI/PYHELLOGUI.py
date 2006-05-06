@@ -1,3 +1,21 @@
+#  Copyright (C) 2005  CEA/DEN, EDF R&D
+#
+#  This library is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Lesser General Public
+#  License as published by the Free Software Foundation; either
+#  version 2.1 of the License.
+#
+#  This library is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public
+#  License along with this library; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+#
+#  See http://www.salome-platform.org/
+#
 from qt import *
 import traceback
 
@@ -123,15 +141,18 @@ def definePopup( context, object, parent ):
 # customize popup menu
 def customPopup( popup, context, object, parent ):
     print "PYHELLOGUI::customPopup :", context, object, parent
-    id = int( object )
-    if id == __MODULE_ID__:
-        study = _getStudy()
-        if sg.SelectedCount() == 1:
-            entry = sg.getSelected( 0 )
-            if entry != '':
-                sobj = study.FindObjectID( entry )
-                if sobj and not _hasChildren( sobj ):
-                    popup.removeItem( 951 ) # remove 'Delete All' command
+    try:
+        id = int( object )
+        if id == __MODULE_ID__:
+            study = _getStudy()
+            if sg.SelectedCount() == 1:
+                entry = sg.getSelected( 0 )
+                if entry != '':
+                    sobj = study.FindObjectID( entry )
+                    if sobj and not _hasChildren( sobj ):
+                        popup.removeItem( 951 ) # remove 'Delete All' command
+    except:
+        pass
     pass
 
 # process GUI action
