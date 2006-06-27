@@ -7,6 +7,6 @@
   </section>
   <section name="resources">
     <!-- Module resources -->
-    <parameter name="PYHELLO" value="${PYHELLO_ROOT_DIR}/share/salome/resources"/>
+    <parameter name="PYHELLO" value="${PYHELLO_ROOT_DIR}/share/salome/resources/pyhello"/>
   </section>
 </document>

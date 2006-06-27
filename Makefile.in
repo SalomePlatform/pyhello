@@ -81,18 +81,6 @@ depend_idl:
 #doc:
 #	(cd doc && $(MAKE) $@) || exit 1
 
-install-end:
-# finish libtool install
-#	@$(LT) --mode=finish $(libdir)
-
-install-include: $(include_list)
-	$(INSTALL) -d  $(includedir)
-	@for f in X $(include_list); do				\
-	   if test $$f != X; then				\
-	     ($(INSTALL_DATA) $$f $(includedir)/. || exit 1);	\
-	   fi;							\
-	done
-
 # install script in $(bindir) :
 install-bin: $(BIN_SCRIPT)
 	$(INSTALL) -d  $(bindir)
@@ -113,5 +101,4 @@ distclean-other:
 
 @MODULE@
 
-install: install-bin install-include install-end
-
+install: install-bin
