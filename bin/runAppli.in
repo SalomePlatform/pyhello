@@ -1,7 +1,11 @@
 #!/bin/sh
 
+if [ -z "${KERNEL_ROOT_DIR}" ] ; then 
 export KERNEL_ROOT_DIR=@KERNEL_ROOT_DIR@
+fi
+if [ -z "${PYHELLO_ROOT_DIR}" ] ; then 
 export PYHELLO_ROOT_DIR=@prefix@
+fi
 
 searchFreePort() {
     echo -n "Searching for a free port for naming service: "
