@@ -1,4 +1,5 @@
-#  Copyright (C) 2005  CEA/DEN, EDF R&D
+#  Copyright (C) 2005  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
+#  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
@@ -16,29 +17,17 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# source path
-top_srcdir=@top_srcdir@
-top_builddir=../..
-srcdir=@srcdir@
-VPATH=.:@srcdir@:@top_srcdir@/idl:$(top_builddir)/idl:${KERNEL_ROOT_DIR}/idl/salome
+# -* Makefile *- 
+#
+# Author : Patrick GOLDBRONN (CEA)
+# Date : 28/06/2001
+#  Modified by : Alexander BORODIN (OCN) - autotools usage
 
-@COMMENCE@
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-# header files
-EXPORT_HEADERS=
+dist_salomeres_DATA = \
+	PYHELLO.png \
+	ExecPYHELLO.png \
+	SalomeApp.xml
 
-# .po files to transform in .qm
-PO_FILES =  PYHELLO_msg_en.po PYHELLO_icons.po
-
-# Libraries targets
-
-LIB =
-LIB_SRC =
-
-LIB_CLIENT_IDL =
-
-LIB_SERVER_IDL =
-
-EXPORT_PYSCRIPTS=PYHELLOGUI.py 
-
-@CONCLUDE@
+nodist_salomeres_DATA = PYHELLOCatalog.xml
