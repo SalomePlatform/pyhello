@@ -225,7 +225,7 @@ def CreateObject():
     attr.SetValue( "Object " +  str( __id__ ) )
     attr    = builder.FindOrCreateAttribute( object, "AttributeLocalID" )
     attr.SetValue( __OBJECT_ID__ )
-    sgPyQt.updateObjBrowser()
+    sg.updateObjBrowser(True)
     pass
 
 # ----------------------- #
@@ -239,7 +239,7 @@ def DeleteAll():
             sobj = iter.Value()
             iter.Next()
             builder.RemoveObjectWithChildren( sobj )
-        sgPyQt.updateObjBrowser()
+        sg.updateObjBrowser(True)
     pass
 
 # ----------------------- #
@@ -264,7 +264,7 @@ def Delete():
         if ( sobj ):
             builder = study.NewBuilder()
             builder.RemoveObject( sobj )
-            sgPyQt.updateObjBrowser()
+            sg.updateObjBrowser(True)
     pass
 
 # ----------------------- #
