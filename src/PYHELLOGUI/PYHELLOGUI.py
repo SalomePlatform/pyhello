@@ -25,6 +25,8 @@ from LifeCycleCORBA import *
 import SALOMEDS
 import SALOMEDS_Attributes_idl
 
+import PYHELLO_ORB
+
 ################################################
 # module name
 __MODULE_NAME__ = "PYHELLO"
@@ -60,7 +62,6 @@ studyManager = obj._narrow( SALOMEDS.StudyManager )
 
 # --- get PYHELLO engine ---
 def _getEngine():
-    import PYHELLO_ORB
     engine = lcc.FindOrLoadComponent( "FactoryServerPy", __MODULE_NAME__ )
     return engine
 
@@ -94,8 +95,7 @@ def _findOrCreateComponent():
         attr = builder.FindOrCreateAttribute( father, "AttributeLocalID" )
         attr.SetValue( __MODULE_ID__ )
         try:
-            ### The following line is commented because it causes crashes ! ###
-            ### builder.DefineComponentInstance( father, _getEngine() )
+            builder.DefineComponentInstance( father, _getEngine() )
             pass
         except:
             pass
@@ -225,7 +225,7 @@ def CreateObject():
     attr.SetValue( "Object " +  str( __id__ ) )
     attr    = builder.FindOrCreateAttribute( object, "AttributeLocalID" )
     attr.SetValue( __OBJECT_ID__ )
-    sgPyQt.updateObjBrowser()
+    sg.updateObjBrowser(True)
     pass
 
 # ----------------------- #
@@ -239,7 +239,7 @@ def DeleteAll():
             sobj = iter.Value()
             iter.Next()
             builder.RemoveObjectWithChildren( sobj )
-        sgPyQt.updateObjBrowser()
+        sg.updateObjBrowser(True)
     pass
 
 # ----------------------- #
@@ -264,7 +264,7 @@ def Delete():
         if ( sobj ):
             builder = study.NewBuilder()
             builder.RemoveObject( sobj )
-            sgPyQt.updateObjBrowser()
+            sg.updateObjBrowser(True)
     pass
 
 # ----------------------- #
