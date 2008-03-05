@@ -16,7 +16,8 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-from qt import *
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 import traceback
 
 from omniORB import CORBA
@@ -135,6 +136,7 @@ def definePopup( context, object, parent ):
                     id = anAttr._narrow( SALOMEDS.AttributeLocalID ).Value()
                     if ( id >= 0 ):
                         object = str( id )
+                        context = "ObjectBrowser"
     print "PYHELLOGUI::definePopup :", context, object, parent
     return context, object, parent
 
@@ -175,22 +177,33 @@ def OnGUIEvent(commandID) :
 class MyDialog( QDialog ):
     # constructor
     def __init__( self, parent = None, modal = 0):
-        QDialog.__init__( self, parent, "MyDialog", modal )
-        self.setCaption( "HELLO!" )
-        vb = QVBoxLayout( self, 8 )
-        vb.setAutoAdd( 1 )
-        hb0 = QHBox( self )
-        label = QLabel( "Prenom: ", hb0 )
-        self.entry = QLineEdit( hb0 )
+        QDialog.__init__( self, parent )
+        self.setObjectName( "MyDialog" )
+        self.setModal( modal )
+        self.setWindowTitle( "HELLO!" )
+        vb = QVBoxLayout( self )
+        vb.setMargin( 8 )
+
+        hb0 = QHBoxLayout( self )
+        label = QLabel( "Prenom: ", self )
+        hb0.addWidget( label )
+        self.entry = QLineEdit( self )
         self.entry.setMinimumWidth( 200 )
+        hb0.addWidget( self.entry )
+        vb.addLayout( hb0 )
         
-        hb1 = QHBox( self )
-        bOk = QPushButton( "&OK", hb1 )
+        hb1 = QHBoxLayout( self )
+        bOk = QPushButton( "&OK", self )
         self.connect( bOk, SIGNAL( 'clicked()' ), self, SLOT( 'accept()' ) )
-        dummy = QWidget( hb1 )
-        bCancel = QPushButton( "&Cancel", hb1 )
+        hb1.addWidget( bOk )
+        
+        hb1.addStretch( 10 )
+        
+        bCancel = QPushButton( "&Cancel", self )
         self.connect( bCancel, SIGNAL( 'clicked()' ), self, SLOT( 'close()' ) )
-        hb1.setStretchFactor( dummy, 10 )
+        hb1.addWidget( bCancel )
+        
+        vb.addLayout( hb1 )
         pass
     
     # OK button slot
@@ -209,7 +222,7 @@ def ShowHELLO():
     # create dialog box
     d = MyDialog( sgPyQt.getDesktop(), 1 )
     # show dialog box
-    d.exec_loop()
+    d.exec_()
 
 __id__ = 0
 

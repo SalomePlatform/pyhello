@@ -125,11 +125,11 @@ CORBA=adm_local/unix/$corba
 
 echo
 echo ---------------------------------------------
-echo testing msg2qm
+echo testing QT
 echo ---------------------------------------------
 echo
 
-CHECK_MSG2QM
+CHECK_QT
 
 echo
 echo ---------------------------------------------
@@ -168,7 +168,7 @@ echo ---------------------------------------------
 echo
 
 echo Configure
-variables="python_ok omniORB_ok msg2qm_ok Kernel_ok"
+variables="python_ok omniORB_ok qt_ok Kernel_ok"
 
 for var in $variables
 do
