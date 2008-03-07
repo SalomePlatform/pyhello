@@ -1,0 +1,18 @@
+This module is a Salome example of a module that is interfaced with MED library.
+
+Installation and compilation is like every Salome modules :
+ src_dir/build_configure
+ mkdir build_dir
+ mkdir instal_dir
+ cd build_dir
+ src_dir/configure --prefix=instal_dir
+ make
+ make install
+
+To check Calculator component, you can use CALCULATOR_TEST.py script, 
+or SUPERVISION graph src_dir/CALCULATOR/graphe1.py
+
+
+Documentation can be found in /doc directory. It was written in sxw format (openoffice) and was converted in pdf.
+
+Implementation is in /src/CALCULATOR directory. It was tested on redhat8 - using gcc 3.2

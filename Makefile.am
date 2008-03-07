@@ -1,4 +1,4 @@
-#  Copyright (C) 2005  CEA/DEN, EDF R&D
+#  Copyright (C) 2005  CEA/DEN, EDF R&D, OPEN CASCADE, PRINCIPIA R&D
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
@@ -16,23 +16,27 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-#==============================================================================
-#  File      : Makefile.in
-#  Created   : ven déc  7 13:32:20 CET 2001
-#  Author    : Paul RASCLE, EDF
-#  Project   : SALOME
-#  Copyright : EDF 2001
-#  $Header$
-#==============================================================================
+# -* Makefile *-
+#
+# Author : Patrick GOLDBRONN (CEA)
+# Date : 28/06/2001
+#  Modified by : Alexander BORODIN (OCN) - autotools usage
+# $Header:
+#
 
-# source path
-top_srcdir=@top_srcdir@
-top_builddir=..
-srcdir=@srcdir@
-VPATH=.:@srcdir@
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-@COMMENCE@
 
-SUBDIRS = PYHELLO PYHELLOGUI
+SUBDIRS = idl adm_local resources src bin 
 
-@MODULE@
+DIST_SUBDIRS = idl adm_local resources src bin 
+
+DISTCLEANFILES = a.out aclocal.m4 configure
+
+EXTRA_DIST+= \
+	build_configure \
+	clean_configure \
+	LICENCE
+
+dist-hook:
+	rm -rf `find $(distdir) -name CVS`
