@@ -58,7 +58,7 @@ install: install-pyidl install-idl
 # create directory $(idldir) and copy idl files into it
 install-idl: $(BASEIDL_FILES)
 	$(INSTALL) -d  $(salomeidldir)
-	cp -p $^ $(salomeidldir)
+	cp -p -f $^ $(salomeidldir)
 
 install-pyidl: $(BASEIDL_FILES)
 	$(INSTALL) -d  $(PYTHON_SITE_INSTALL)

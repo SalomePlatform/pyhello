@@ -28,7 +28,6 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 dist_salomeres_DATA = \
 	PYHELLO.png \
 	ExecPYHELLO.png \
-	SalomeApp.xml \
-	PYHELLO_en.xml
+	SalomeApp.xml
 
 nodist_salomeres_DATA = PYHELLOCatalog.xml
