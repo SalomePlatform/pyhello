@@ -45,7 +45,7 @@ class GUIcontext:
     # module name
     MODULE_NAME      = "PYHELLO"
     # module icon
-    MODULE_PIXMAP    = "PYHELLO.png"
+    MODULE_PIXMAP    = "PYHELLO_small.png"
     # data objects IDs
     MODULE_ID        = 1000
     OBJECT_ID        = 1010
@@ -350,13 +350,13 @@ def createPopupMenu( popup, context ):
         # one object is selected
         if GUIcontext.MODULE_ID in selected:
             # menu for component
-            sgPyQt.action( GUIcontext.DELETE_ALL_ID ).addTo( popup )
+            popup.addAction( sgPyQt.action( GUIcontext.DELETE_ALL_ID ) )
         elif GUIcontext.OBJECT_ID in selected:
             # menu for object
-            sgPyQt.action( GUIcontext.SHOW_ME_ID ).addTo( popup )
-            sgPyQt.action( GUIcontext.RENAME_ME_ID ).addTo( popup )
-            popup.insertSeparator()
-            sgPyQt.action( GUIcontext.DELETE_ME_ID ).addTo( popup )
+            popup.addAction( sgPyQt.action( GUIcontext.SHOW_ME_ID ) )
+            popup.addAction( sgPyQt.action( GUIcontext.RENAME_ME_ID ) )
+            popup.addSeparator()
+            popup.addAction( sgPyQt.action( GUIcontext.DELETE_ME_ID ) )
             pass
         pass
     elif selcount > 1:
@@ -364,10 +364,10 @@ def createPopupMenu( popup, context ):
         if len( selected ) == 1:
             if GUIcontext.MODULE_ID in selected:
                 # menu for component
-                sgPyQt.action( GUIcontext.DELETE_ALL_ID ).addTo( popup )
+                popup.addAction( sgPyQt.action( GUIcontext.DELETE_ALL_ID ) )
             elif GUIcontext.OBJECT_ID in selected:
                 # menu for list of objects
-                sgPyQt.action( GUIcontext.DELETE_ME_ID ).addTo( popup )
+                popup.addAction( sgPyQt.action( GUIcontext.DELETE_ME_ID ) )
                 pass
             pass
         pass
@@ -474,13 +474,17 @@ def ShowHELLO():
 # Create new object
 ###
 def CreateObject():
-    default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ).stripWhiteSpace() )
+    default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ).trimmed() )
     try:
         if sgPyQt.action( GUIcontext.OPTION_3_ID ).isOn():
             # request object name from the user
-            name, ok = QInputDialog.getText( "Create Object", "Enter object name:", QLineEdit.Normal, default_name )
+            name, ok = QInputDialog.getText( sgPyQt.getDesktop(),
+                                             "Create Object",
+                                             "Enter object name:",
+                                             QLineEdit.Normal,
+                                             default_name )
             if not ok: return
-            name = str( name.stripWhiteSpace() )
+            name = str( name.trimmed() )
         elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isOn():
             # generate object name
             global __id__
@@ -572,8 +576,12 @@ def Rename():
     if entry != '':
         sobj = study.FindObjectID( entry )
         if ( sobj ):
-            name, ok = QInputDialog.getText( "Object name", "Enter object name:", QLineEdit.Normal, sobj.GetName() )
-            name = str( name.stripWhiteSpace() )
+            name, ok = QInputDialog.getText( sgPyQt.getDesktop(),
+                                             "Object name",
+                                             "Enter object name:",
+                                             QLineEdit.Normal,
+                                             sobj.GetName() )
+            name = str( name.trimmed() )
             if not ok or not name: return
             attr = builder.FindOrCreateAttribute( sobj, "AttributeName" )
             attr.SetValue( name )
