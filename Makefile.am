@@ -26,17 +26,17 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
+ACLOCAL_AMFLAGS = -I adm_local/unix/config_files \
+                  -I ${KERNEL_ROOT_DIR}/salome_adm/unix/config_files \
+                  -I ${GUI_ROOT_DIR}/adm_local/unix/config_files 
 
-SUBDIRS = idl adm_local resources src bin 
-
-DIST_SUBDIRS = idl adm_local resources src bin 
+SUBDIRS = idl adm_local resources src bin doc
 
 DISTCLEANFILES = a.out aclocal.m4 configure
 
-EXTRA_DIST+= \
-	build_configure \
-	clean_configure \
-	LICENCE
+EXTRA_DIST +=		\
+	build_configure	\
+	clean_configure
 
 dist-hook:
 	rm -rf `find $(distdir) -name CVS`

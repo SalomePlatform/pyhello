@@ -23,18 +23,9 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-#
-# ===============================================================
-# Files to be installed
-# ===============================================================
-#
-
-# These files are data, module or lib files
-
-dist_salomescript_DATA= \
+dist_salomescript_SCRIPTS = \
 	myrunSalome.py
-nodist_salomescript_DATA= \
+
+nodist_salomescript_DATA = \
 	VERSION \
 	runAppli
-
-EXTRA_DIST+= VERSION.in runAppli.in

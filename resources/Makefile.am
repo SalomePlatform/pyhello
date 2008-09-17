@@ -31,4 +31,5 @@ dist_salomeres_DATA = \
 	ExecPYHELLO.png \
 	SalomeApp.xml
 
-nodist_salomeres_DATA = PYHELLOCatalog.xml
+# VSR: little trick to avoid putting if PYHELLOCatalog.xml to the distribution archive
+nodist_salomeres_SCRIPTS = PYHELLOCatalog.xml

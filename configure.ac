@@ -15,7 +15,7 @@
 # Created from configure.in.base
 #
 
-AC_INIT([Salome2 Project PYHELLO module], [5.0.0], [webmaster.salome@opencascade.com], [salome])
+AC_INIT([Salome2 Project PYHELLO module], [5.0.0], [webmaster.salome@opencascade.com], [SalomePYHELLO])
 AC_CONFIG_AUX_DIR(salome_adm/unix/config_files)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
@@ -209,6 +209,7 @@ AC_OUTPUT([ \
   ./bin/VERSION \
   ./bin/runAppli \
   ./bin/Makefile \
+  ./doc/Makefile \
   ./src/Makefile \
   ./src/PYHELLO/Makefile \
   ./src/PYHELLOGUI/Makefile \

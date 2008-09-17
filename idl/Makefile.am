@@ -28,10 +28,8 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 BASEIDL_FILES = PYHELLO_Gen.idl
 
-EXTRA_DIST+= $(BASEIDL_FILES)
-
 # This variable defines the files to be installed
-salomeidl_DATA = $(BASEIDL_FILES)
+dist_salomeidl_DATA = $(BASEIDL_FILES)
 
 # These variables defines the building process of CORBA files
 OMNIORB_IDL         = @OMNIORB_IDL@
@@ -40,7 +38,6 @@ OMNIORB_IDLPYFLAGS  = \
 	@OMNIORB_IDLPYFLAGS@ \
 	-I$(top_builddir)/idl/salome \
 	-I$(KERNEL_ROOT_DIR)/idl/salome
-
 
 IDLCXXFLAGS = \
 	-bcxx \
@@ -52,25 +49,17 @@ IDLPYFLAGS  = \
 	@IDLPYFLAGS@ \
 	-I$(KERNEL_ROOT_DIR)/idl/salome
 
-# install python client (generated from idl file
-install: install-pyidl install-idl
-
-# create directory $(idldir) and copy idl files into it
-install-idl: $(BASEIDL_FILES)
-	$(INSTALL) -d  $(salomeidldir)
-	cp -p -f $^ $(salomeidldir)
-
-install-pyidl: $(BASEIDL_FILES)
-	$(INSTALL) -d  $(PYTHON_SITE_INSTALL)
+install-exec-local: $(BASEIDL_FILES:%=$(top_srcdir)/idl/%)
+	$(INSTALL) -d  $(DESTDIR)$(salomepythondir)
 	@for file in $^ dummy; do \
           if [ $$file != "dummy" ]; then \
-             $(OMNIORB_IDL) $(OMNIORB_IDLPYFLAGS) -C$(PYTHON_SITE_INSTALL) $$file ; \
+             $(OMNIORB_IDL) $(OMNIORB_IDLPYFLAGS) -C$(DESTDIR)$(salomepythondir) $$file ; \
           fi ; \
         done ;
 
 # uninstall-local removes too much, but it works in distcheck
 uninstall-local:
-	rm -rf $(pkgpythondir)/*
+	rm -rf $(DESTDIR)$(salomepythondir)/*
 
 mostlyclean-local:
 	-rm -f *.py
