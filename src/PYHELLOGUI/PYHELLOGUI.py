@@ -84,18 +84,21 @@ class GUIcontext:
         sgPyQt.createMenu( a, mid )
         try:
             ag = sgPyQt.createActionGroup( GUIcontext.OPTIONS_ID )
+            ag.setText( "Creation mode" )
+            ag.setUsesDropDown(True)
             a = sgPyQt.createAction( GUIcontext.OPTION_1_ID, "Default name", "Default name", "Use default name for the objects" )
-            a.setToggleAction( True )
+            a.setCheckable( True )
             ag.add( a )
             a = sgPyQt.createAction( GUIcontext.OPTION_2_ID, "Generate name", "Generate name", "Generate name for the objects" )
-            a.setToggleAction( True )
+            a.setCheckable( True )
             ag.add( a )
             a = sgPyQt.createAction( GUIcontext.OPTION_3_ID, "Ask name", "Ask name", "Request object name from the user" )
-            a.setToggleAction( True )
+            a.setCheckable( True )
             ag.add( a )
             sgPyQt.createMenu( ag, mid )
+            sgPyQt.createTool( ag, tid )
             default_mode = sgPyQt.integerSetting( "PYHELLO", "creation_mode", 0 )
-            sgPyQt.action( GUIcontext.OPTION_1_ID + default_mode ).setOn( True )
+            sgPyQt.action( GUIcontext.OPTION_1_ID + default_mode ).setChecked( True )
         except:
             pass
         # the following action are used in context popup
@@ -293,8 +296,8 @@ def initialize():
 def windows():
     if verbose() : print "PYHELLOGUI.windows() : study : %d" % _getStudyId()
     wm = {}
-    wm[SalomePyQt.WT_ObjectBrowser] = Qt.DockLeft
-    wm[SalomePyQt.WT_PyConsole]     = Qt.DockBottom
+    wm[SalomePyQt.WT_ObjectBrowser] = Qt.LeftDockWidgetArea
+    wm[SalomePyQt.WT_PyConsole]     = Qt.BottomDockWidgetArea
     return wm
 
 # called when module is initialized
@@ -311,12 +314,16 @@ def createPreferences():
     gid = sgPyQt.addPreference( "Object creation", gid )
     pid = sgPyQt.addPreference( "Default name",  gid, SalomePyQt.PT_String,   "PYHELLO", "def_obj_name" )
     pid = sgPyQt.addPreference( "Default creation mode", gid, SalomePyQt.PT_Selector, "PYHELLO", "creation_mode" )
-    sgPyQt.addPreferenceProperty( pid, "strings", 0, QVariant( "Default name" ) )
-    sgPyQt.addPreferenceProperty( pid, "indexes", 0, QVariant( 0 ) )
-    sgPyQt.addPreferenceProperty( pid, "strings", 1, QVariant( "Generate name" ) )
-    sgPyQt.addPreferenceProperty( pid, "indexes", 1, QVariant( 1 ) )
-    sgPyQt.addPreferenceProperty( pid, "strings", 2, QVariant( "Ask name" ) )
-    sgPyQt.addPreferenceProperty( pid, "indexes", 2, QVariant( 2 ) )
+    strings = QStringList()
+    strings.append( "Default name" )
+    strings.append( "Generate name" )
+    strings.append( "Ask name" )
+    indexes = []
+    indexes.append( QVariant(0) )
+    indexes.append( QVariant(1) )
+    indexes.append( QVariant(2) )
+    sgPyQt.setPreferenceProperty( pid, "strings", QVariant( strings ) )
+    sgPyQt.setPreferenceProperty( pid, "indexes", QVariant( indexes ) )
     pass
 
 # called when module is activated
@@ -476,7 +483,7 @@ def ShowHELLO():
 def CreateObject():
     default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ).trimmed() )
     try:
-        if sgPyQt.action( GUIcontext.OPTION_3_ID ).isOn():
+        if sgPyQt.action( GUIcontext.OPTION_3_ID ).isChecked():
             # request object name from the user
             name, ok = QInputDialog.getText( sgPyQt.getDesktop(),
                                              "Create Object",
@@ -485,7 +492,7 @@ def CreateObject():
                                              default_name )
             if not ok: return
             name = str( name.trimmed() )
-        elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isOn():
+        elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isChecked():
             # generate object name
             global __id__
             __id__  = __id__ + 1
