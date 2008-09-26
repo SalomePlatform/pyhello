@@ -82,6 +82,8 @@ class GUIcontext:
         a = sgPyQt.createSeparator()
         sgPyQt.createMenu( a, mid )
         ag = sgPyQt.createActionGroup( GUIcontext.OPTIONS_ID )
+	ag.setText( "Creation mode" )
+	ag.setUsesDropDown( True )
         a = sgPyQt.createAction( GUIcontext.OPTION_1_ID, "Default name", "Default name", "Use default name for the objects" )
         a.setToggleAction( True )
         ag.add( a )
@@ -92,6 +94,7 @@ class GUIcontext:
         a.setToggleAction( True )
         ag.add( a )
         sgPyQt.createMenu( ag, mid )
+	sgPyQt.createTool( ag, tid )
         default_mode = sgPyQt.integerSetting( "PYHELLO", "creation_mode", 0 )
         sgPyQt.action( GUIcontext.OPTION_1_ID + default_mode ).setOn( True )
         # the following action are used in context popup
