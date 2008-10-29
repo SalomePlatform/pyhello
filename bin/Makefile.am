@@ -31,10 +31,13 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 # These files are data, module or lib files
 
-dist_salomescript_DATA= \
+dist_salomescript_SCRIPTS= \
 	myrunSalome.py
-nodist_salomescript_DATA= \
-	VERSION \
+	
+dist_salomescript_SCRIPTS= \
 	runAppli
+	
+nodist_salomescript_DATA= \
+	VERSION
 
 EXTRA_DIST+= VERSION.in runAppli.in
