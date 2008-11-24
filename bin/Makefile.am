@@ -34,7 +34,7 @@ include $(top_srcdir)/adm_local/unix/make_common_starter.am
 dist_salomescript_SCRIPTS= \
 	myrunSalome.py
 	
-dist_salomescript_SCRIPTS= \
+nodist_salomescript_SCRIPTS= \
 	runAppli
 	
 nodist_salomescript_DATA= \
