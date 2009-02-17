@@ -1,3 +1,4 @@
+<!DOCTYPE TS>
 <!--
   Copyright (C) 2007-2008  CEA/DEN, EDF R&D, OPEN CASCADE
 
@@ -21,15 +22,4 @@
   See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 
 -->
-<document>
-  <section name="PYHELLO">
-    <!-- Major module parameters -->
-    <parameter name="name"    value="PyHello"/>
-    <parameter name="icon"    value="PYHELLO.png"/>
-    <parameter name="library" value="SalomePyQtGUI"/>
-  </section>
-  <section name="resources">
-    <!-- Module resources -->
-    <parameter name="PYHELLO" value="${PYHELLO_ROOT_DIR}/share/salome/resources/pyhello"/>
-  </section>
-</document>
+<TS version="1.1" />

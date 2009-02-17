@@ -1,21 +1,35 @@
+#  Copyright (C) 2007-2008  CEA/DEN, EDF R&D, OPEN CASCADE
+#
+#  Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
+#  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+#
+#  This library is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Lesser General Public
+#  License as published by the Free Software Foundation; either
+#  version 2.1 of the License.
+#
+#  This library is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public
+#  License along with this library; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+#
+#  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 #  PLEASE DO NOT MODIFY configure.in FILE
-#
 #  ALL CHANGES WILL BE DISCARDED BY THE NEXT
 #  build_configure COMMAND
-#
 #  CHANGES MUST BE MADE IN configure.in.base FILE
-#
-#
 # Author : Marc Tajchman (CEA)
 # Date : 28/06/2001
 # Modified by : Patrick GOLDBRONN (CEA)
 # Modified by : Marc Tajchman (CEA)
-#
 # Created from configure.in.base
 #
-
-AC_INIT([Salome2 Project PYHELLO module], [4.1.1], [webmaster.salome@opencascade.com], [salome])
+AC_INIT([Salome2 Project PYHELLO module], [5.1.0], [webmaster.salome@opencascade.com], [SalomePYHELLO])
 AC_CONFIG_AUX_DIR(salome_adm/unix/config_files)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
@@ -125,11 +139,11 @@ CORBA=adm_local/unix/$corba
 
 echo
 echo ---------------------------------------------
-echo testing msg2qm
+echo testing QT
 echo ---------------------------------------------
 echo
 
-CHECK_MSG2QM
+CHECK_QT
 
 echo
 echo ---------------------------------------------
@@ -168,7 +182,7 @@ echo ---------------------------------------------
 echo
 
 echo Configure
-variables="python_ok omniORB_ok msg2qm_ok Kernel_ok"
+variables="python_ok omniORB_ok qt_ok Kernel_ok"
 
 for var in $variables
 do
@@ -209,6 +223,7 @@ AC_OUTPUT([ \
   ./bin/VERSION \
   ./bin/runAppli \
   ./bin/Makefile \
+  ./doc/Makefile \
   ./src/Makefile \
   ./src/PYHELLO/Makefile \
   ./src/PYHELLOGUI/Makefile \

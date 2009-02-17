@@ -1,4 +1,7 @@
-#  Copyright (C) 2005  CEA/DEN, EDF R&D
+#  Copyright (C) 2007-2008  CEA/DEN, EDF R&D, OPEN CASCADE
+#
+#  Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
+#  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
 #
 #  This library is free software; you can redistribute it and/or
 #  modify it under the terms of the GNU Lesser General Public
@@ -14,16 +17,10 @@
 #  License along with this library; if not, write to the Free Software
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-# See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
+#  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-# This is a Qt message file in .po format.  Each msgid starts with
-# a scope.  This scope should *NOT* be translated - eg. "Foo::Bar"
-# would be translated to "Pub", not "Foo::Pub".
-msgid ""
-msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2002-05-28 10:57:43 AM CEST\n"
-"PO-Revision-Date: YYYY-MM-DD\n"
-"Last-Translator: FULLNAME <EMAIL@ADDRESS>\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
+dist_doc_DATA = dev_guide.pdf
+
+EXTRA_DIST   += dev_guide.txt
