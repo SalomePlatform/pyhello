@@ -24,8 +24,10 @@
 #  Author : , CEA
 #  Modified by : Alexander BORODIN (OCN) - autotools usage
 #
+
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
 # Scripts to be installed
 dist_salomescript_SCRIPTS = \
-	PYHELLO.py
+	PYHELLO.py \
+	PYHELLO_utils.py

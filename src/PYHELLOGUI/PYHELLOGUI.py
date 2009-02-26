@@ -24,18 +24,13 @@
 # Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 # ---
 #
+
 import traceback
 import os
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-from omniORB import CORBA
-from SALOME_NamingServicePy import *
-from LifeCycleCORBA import *
-import SALOMEDS
-import SALOMEDS_Attributes_idl
-
-import PYHELLO_ORB
+from PYHELLO_utils import *
 
 ################################################
 # GUI context class
@@ -43,14 +38,6 @@ import PYHELLO_ORB
 ################################################
 
 class GUIcontext:
-    # module name
-    MODULE_NAME      = "PYHELLO"
-    # module icon
-    MODULE_PIXMAP    = "PYHELLO_small.png"
-    # data objects IDs
-    MODULE_ID        = 1000
-    OBJECT_ID        = 1010
-    FOREIGN_ID       = -1
     # menus/toolbars/actions IDs
     PYHELLO_MENU_ID  = 90
     HELLO_ID         = 941
@@ -133,44 +120,9 @@ sg = libSALOME_Swig.SALOMEGUI_Swig()
 
 ################################################
 
-# init ORB
-orb = CORBA.ORB_init( [''], CORBA.ORB_ID )
-
-# create naming service instance
-naming_service = SALOME_NamingServicePy_i( orb )
-
-# create life cycle CORBA instance
-lcc = LifeCycleCORBA( orb )
-
-# get study manager
-obj = naming_service.Resolve( '/myStudyManager' )
-studyManager = obj._narrow( SALOMEDS.StudyManager )
-
 ################################################
 # Internal methods
 ################################################
-
-###
-# Check verbose mode
-### 
-__verbose__ = None
-def verbose():
-    global __verbose__
-    if __verbose__ is None:
-        try:
-            __verbose__ = int( os.getenv('SALOME_VERBOSE', 0) )
-        except:
-            __verbose__ = 0
-            pass
-        pass
-    return __verbose__
-
-###
-# get PYHELLO engine
-###
-def _getEngine():
-    engine = lcc.FindOrLoadComponent( "FactoryServerPy", GUIcontext.MODULE_NAME )
-    return engine
 
 ###
 # get active study ID
@@ -183,7 +135,7 @@ def _getStudyId():
 ###
 def _getStudy():
     studyId = _getStudyId()
-    study = studyManager.GetStudyByID( studyId )
+    study = getStudyManager().GetStudyByID( studyId )
     return study
 
 ###
@@ -201,29 +153,6 @@ def _hasChildren( sobj ):
             pass
         pass
     return False
-
-###
-# finds or creates component object
-###
-def _findOrCreateComponent():
-    study = _getStudy()
-    father = study.FindComponent( GUIcontext.MODULE_NAME )
-    if father is None:
-        builder = study.NewBuilder()
-        father = builder.NewComponent( GUIcontext.MODULE_NAME )
-        attr = builder.FindOrCreateAttribute( father, "AttributeName" )
-        attr.SetValue( GUIcontext.MODULE_NAME )
-        attr = builder.FindOrCreateAttribute( father, "AttributePixMap" )
-        attr.SetPixMap( GUIcontext.MODULE_PIXMAP )
-        attr = builder.FindOrCreateAttribute( father, "AttributeLocalID" )
-        attr.SetValue( GUIcontext.MODULE_ID )
-        try:
-            builder.DefineComponentInstance( father, _getEngine() )
-            pass
-        except:
-            pass
-        pass
-    return father
 
 ###
 # get current GUI context
@@ -258,22 +187,8 @@ def _incObjToMap( m, id ):
 def _getSelection():
     selcount = sg.SelectedCount()
     seltypes = {}
-    study = _getStudy()
     for i in range( selcount ):
-        entry = sg.getSelected( i )
-        if entry:
-            sobj = study.FindObjectID( entry )
-            if sobj is not None:
-                test, anAttr = sobj.FindAttribute( "AttributeLocalID" )
-                if test:
-                    ID = anAttr._narrow( SALOMEDS.AttributeLocalID ).Value()
-                    if ID >= 0:
-                        _incObjToMap( seltypes, ID )
-                        continue
-                    pass
-                pass
-            pass
-        _incObjToMap( seltypes, GUIcontext.FOREIGN_ID )
+        _incObjToMap( seltypes, getObjectID( _getStudy(), sg.getSelected( i ) ) )
         pass
     return selcount, seltypes
 
@@ -356,10 +271,10 @@ def createPopupMenu( popup, context ):
     print selcount, selected
     if selcount == 1:
         # one object is selected
-        if GUIcontext.MODULE_ID in selected:
+        if moduleID() in selected:
             # menu for component
             popup.addAction( sgPyQt.action( GUIcontext.DELETE_ALL_ID ) )
-        elif GUIcontext.OBJECT_ID in selected:
+        elif objectID() in selected:
             # menu for object
             popup.addAction( sgPyQt.action( GUIcontext.SHOW_ME_ID ) )
             popup.addAction( sgPyQt.action( GUIcontext.RENAME_ME_ID ) )
@@ -370,10 +285,10 @@ def createPopupMenu( popup, context ):
     elif selcount > 1:
         # several objects are selected
         if len( selected ) == 1:
-            if GUIcontext.MODULE_ID in selected:
+            if moduleID() in selected:
                 # menu for component
                 popup.addAction( sgPyQt.action( GUIcontext.DELETE_ALL_ID ) )
-            elif GUIcontext.OBJECT_ID in selected:
+            elif objectID() in selected:
                 # menu for list of objects
                 popup.addAction( sgPyQt.action( GUIcontext.DELETE_ME_ID ) )
                 pass
@@ -461,7 +376,7 @@ class MyDialog( QDialog ):
     def accept( self ):
         name = str( self.entry.text() )
         if name != "":
-            banner = _getEngine().makeBanner( name )
+            banner = getEngine().makeBanner( name )
             QMessageBox.information( self, 'Info', banner )
             self.close()
         else:
@@ -509,14 +424,7 @@ def CreateObject():
         name = "%s %d" % ( default_name, __id__ )
         pass
     if not name: return
-    study   = _getStudy()
-    builder = study.NewBuilder()
-    father  = _findOrCreateComponent()
-    object  = builder.NewObject( father )
-    attr    = builder.FindOrCreateAttribute( object, "AttributeName" )
-    attr.SetValue( name )
-    attr    = builder.FindOrCreateAttribute( object, "AttributeLocalID" )
-    attr.SetValue( GUIcontext.OBJECT_ID )
+    getEngine().createObject( _getStudy(), name )
     sg.updateObjBrowser( True )
     pass
 
@@ -525,7 +433,7 @@ def CreateObject():
 ###
 def DeleteAll():
     study = _getStudy()
-    father = study.FindComponent( GUIcontext.MODULE_NAME )
+    father = study.FindComponent( moduleName() )
     if father:
         iter = study.NewChildIterator( father )
         builder = study.NewBuilder()

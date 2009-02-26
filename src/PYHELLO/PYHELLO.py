@@ -19,30 +19,83 @@
 #
 #  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+# ---
+# File   : PYHELLOGUI.py
+# Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
+# ---
+#
+
 import PYHELLO_ORB__POA
 import SALOME_ComponentPy
 import SALOME_DriverPy
+
+from PYHELLO_utils import *
 
 class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
               SALOME_ComponentPy.SALOME_ComponentPy_i,
               SALOME_DriverPy.SALOME_DriverPy_i):
     """
-        Pour etre un composant SALOME cette classe Python
-        doit avoir le nom du composant et heriter de la
-        classe PYHELLO_Gen issue de la compilation de l'idl
-        par omniidl et de la classe SALOME_ComponentPy_i
-        qui porte les services generaux d'un composant SALOME
+    Construct an instance of PYHELLO module engine.
+    The class PYHELLO implements CORBA interface PYHELLO_Gen (see PYHELLO_Gen.idl).
+    It is inherited from the classes SALOME_ComponentPy_i (implementation of
+    Engines::Component CORBA interface - SALOME component) and SALOME_DriverPy_i
+    (implementation of SALOMEDS::Driver CORBA interface - SALOME module's engine).
     """
     def __init__ ( self, orb, poa, contID, containerName, instanceName, 
                    interfaceName ):
-        print "PYHELLO.__init__: ", containerName, ';', instanceName
         SALOME_ComponentPy.SALOME_ComponentPy_i.__init__(self, orb, poa,
                     contID, containerName, instanceName, interfaceName, 0)
         SALOME_DriverPy.SALOME_DriverPy_i.__init__(self, interfaceName)
-        # On stocke dans l'attribut _naming_service, une reference sur
-        # le Naming Service CORBA
+        #
         self._naming_service = SALOME_ComponentPy.SALOME_NamingServicePy_i( self._orb )
+        #
+        pass
 
+    """
+    Generate hello banner.
+    """
     def makeBanner( self, name ):
         banner = "Hello %s!" % name
         return banner
+
+    """
+    Create object.
+    """
+    def createObject( self, study, name ):
+        builder = study.NewBuilder()
+        father  = findOrCreateComponent( study )
+        object  = builder.NewObject( father )
+        attr    = builder.FindOrCreateAttribute( object, "AttributeName" )
+        attr.SetValue( name )
+        attr    = builder.FindOrCreateAttribute( object, "AttributeLocalID" )
+        attr.SetValue( objectID() )
+        pass
+
+    """
+    Dump module data to the Python script.
+    """
+    def DumpPython( self, study, isPublished ):
+        abuffer = []
+        abuffer.append( "def RebuildData( theStudy ):" )
+        names = []
+        father = study.FindComponent( moduleName() )
+        if father:
+            iter = study.NewChildIterator( father )
+            while iter.More():
+                name = iter.Value().GetName()
+                if name: names.append( name )
+                iter.Next()
+                pass
+            pass
+        if names:
+            abuffer += [ "  from batchmode_salome import lcc" ]
+            abuffer += [ "  import PYHELLO_ORB" ]
+            abuffer += [ "  " ]
+            abuffer += [ "  pyhello = lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
+            abuffer += [ "  " ]
+            abuffer += [ "  pyhello.createObject( theStudy, '%s' )" % name for name in names ]
+            pass
+        abuffer += [ "  " ]
+        abuffer.append( "  pass" )
+        abuffer.append( "\0" )
+        return ("\n".join( abuffer ), 1)

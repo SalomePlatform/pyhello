@@ -19,6 +19,12 @@
 //
 //  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 //
+// ---
+// File   : PYHELLOGUI.py
+// Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
+// ---
+//
+
 #ifndef __PYHELLO_GEN__
 #define __PYHELLO_GEN__
 
@@ -30,8 +36,16 @@ module PYHELLO_ORB
 {
   interface PYHELLO_Gen : Engines::Component, SALOMEDS::Driver
   {
-     string makeBanner(in string name)
-         raises (SALOME::SALOME_Exception);
+    string makeBanner(in string name)
+      raises (SALOME::SALOME_Exception);
+    
+    void createObject(in SALOMEDS::Study theStudy,
+		      in string name)
+      raises (SALOME::SALOME_Exception);
+
+    TMPFile DumpPython(in Object theStudy,
+                       in boolean isPublished,
+                       out boolean isValidScript);
   };
 };
 
