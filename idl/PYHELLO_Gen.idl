@@ -42,10 +42,6 @@ module PYHELLO_ORB
     void createObject(in SALOMEDS::Study theStudy,
 		      in string name)
       raises (SALOME::SALOME_Exception);
-
-    SALOMEDS::TMPFile DumpPython(in Object theStudy,
-				 in boolean isPublished,
-				 out boolean isValidScript);
   };
 };
 
