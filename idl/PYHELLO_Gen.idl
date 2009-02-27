@@ -43,9 +43,9 @@ module PYHELLO_ORB
 		      in string name)
       raises (SALOME::SALOME_Exception);
 
-    TMPFile DumpPython(in Object theStudy,
-                       in boolean isPublished,
-                       out boolean isValidScript);
+    SALOMEDS::TMPFile DumpPython(in Object theStudy,
+				 in boolean isPublished,
+				 out boolean isValidScript);
   };
 };
 
