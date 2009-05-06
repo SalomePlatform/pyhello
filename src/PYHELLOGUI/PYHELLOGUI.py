@@ -268,7 +268,7 @@ def createPopupMenu( popup, context ):
     ctx = _setContext( _getStudyId() )
     study = _getStudy()
     selcount, selected = _getSelection()
-    print selcount, selected
+    if verbose() : print selcount, selected
     if selcount == 1:
         # one object is selected
         if moduleID() in selected:
@@ -332,6 +332,12 @@ def viewCloned( viewID ):
 def viewClosed( viewID ):
     if verbose() : print "PYHELLOGUI.viewClosed(): %d" % viewID
     pass
+
+# called when study is opened
+# returns engine IOR
+def engineIOR():
+    if verbose() : print "PYHELLOGUI.engineIOR()"
+    return getEngineIOR()
 
 ################################################
 # GUI actions implementation

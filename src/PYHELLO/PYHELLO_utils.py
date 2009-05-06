@@ -37,6 +37,7 @@ __all__ = [
     "getLCC",
     "getStudyManager",
     "getEngine",
+    "getEngineIOR",
     "findOrCreateComponent",
     "getObjectID",
     ]
@@ -151,6 +152,16 @@ def getEngine():
         __engine__ = getLCC().FindOrLoadComponent( "FactoryServerPy", moduleName() )
         pass
     return __engine__
+
+###
+# Get PYHELLO engine IOR
+###
+def getEngineIOR():
+    IOR = ""
+    if getORB() and getEngine():
+        IOR = getORB().object_to_string( getEngine() )
+        pass
+    return IOR
 
 ###
 # Find or create PYHELLO component object in a study
