@@ -30,6 +30,8 @@ dist_salomeres_DATA = \
 	PYHELLO.png \
 	PYHELLO_small.png \
 	ExecPYHELLO.png \
+	handshake.png \
+	stop.png \
 	SalomeApp.xml
 
 # VSR: little trick to avoid putting if PYHELLOCatalog.xml to the distribution archive

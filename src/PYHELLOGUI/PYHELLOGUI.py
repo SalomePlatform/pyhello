@@ -366,12 +366,14 @@ class MyDialog( QDialog ):
         
         hb1 = QHBoxLayout( self )
         bOk = QPushButton( "&OK", self )
+        bOk.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_HANDSHAKE' ) )
         self.connect( bOk, SIGNAL( 'clicked()' ), self, SLOT( 'accept()' ) )
         hb1.addWidget( bOk )
         
         hb1.addStretch( 10 )
         
         bCancel = QPushButton( "&Cancel", self )
+        bCancel.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_STOP' ) )
         self.connect( bCancel, SIGNAL( 'clicked()' ), self, SLOT( 'close()' ) )
         hb1.addWidget( bCancel )
         

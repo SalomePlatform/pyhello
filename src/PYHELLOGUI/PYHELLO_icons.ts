@@ -22,4 +22,16 @@
   See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 
 -->
-<TS version="1.1" />
+<TS version="1.1">
+<context>
+    <name>@default</name>
+    <message>
+        <source>ICO_HANDSHAKE</source>
+        <translation>handshake.png</translation>
+    </message>
+    <message>
+        <source>ICO_STOP</source>
+        <translation>stop.png</translation>
+    </message>
+</context>
+</TS>
