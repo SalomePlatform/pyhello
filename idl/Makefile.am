@@ -43,8 +43,7 @@ IDLCXXFLAGS = \
 	-bcxx \
 	@IDLCXXFLAGS@ \
 	-I$(top_builddir)/idl/salome \
-	-I$(KERNEL_ROOT_DIR)/idl/salome \
-	-I$(top_builddir)/salome_adm/unix
+	-I$(KERNEL_ROOT_DIR)/idl/salome
 IDLPYFLAGS  = \
 	@IDLPYFLAGS@ \
 	-I$(KERNEL_ROOT_DIR)/idl/salome
