@@ -106,7 +106,7 @@ __study2context__   = {}
 # current context
 __current_context__ = None
 # object counter
-__id__ = 0
+__objectid__ = 0
 
 ################################################
        
@@ -405,6 +405,7 @@ def ShowHELLO():
 # Create new object
 ###
 def CreateObject():
+    global __objectid__
     default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ).trimmed() )
     try:
         if sgPyQt.action( GUIcontext.OPTION_3_ID ).isChecked():
@@ -418,18 +419,16 @@ def CreateObject():
             name = str( name.trimmed() )
         elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isChecked():
             # generate object name
-            global __id__
-            __id__  = __id__ + 1
-            name = "%s %d" % ( default_name, __id__ )
+            __objectid__  = __objectid__ + 1
+            name = "%s %d" % ( default_name, __objectid__ )
         else:
             name = default_name
             pass
         pass
     except:
         # generate object name
-        global __id__
-        __id__  = __id__ + 1
-        name = "%s %d" % ( default_name, __id__ )
+        __objectid__  = __objectid__ + 1
+        name = "%s %d" % ( default_name, __objectid__ )
         pass
     if not name: return
     getEngine().createObject( _getStudy(), name )
