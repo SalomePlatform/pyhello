@@ -148,6 +148,14 @@ CHECK_QT
 
 echo
 echo ---------------------------------------------
+echo Testing html generators
+echo ---------------------------------------------
+echo
+
+CHECK_HTML_GENERATORS
+
+echo
+echo ---------------------------------------------
 echo Testing Kernel
 echo ---------------------------------------------
 echo
@@ -169,12 +177,11 @@ echo ---------------------------------------------
 echo
 
 CHECK_CORBA_IN_GUI
+
 if test "x${CORBA_IN_GUI}" != "xyes"; then
-  echo "failed : For configure PYHELLO1 module necessary full GUI !"
+  echo "failed : For configure PYHELLO module necessary full GUI !"
   exit
 fi
-
-
 
 echo
 echo ---------------------------------------------
@@ -183,7 +190,7 @@ echo ---------------------------------------------
 echo
 
 echo Configure
-variables="python_ok omniORB_ok qt_ok Kernel_ok"
+variables="python_ok omniORB_ok qt_ok doxygen_ok Kernel_ok"
 
 for var in $variables
 do
@@ -224,6 +231,7 @@ AC_OUTPUT([ \
   bin/runAppli \
   bin/Makefile \
   doc/Makefile \
+  doc/doxyfile \
   src/Makefile \
   src/PYHELLO/Makefile \
   src/PYHELLOGUI/Makefile \
