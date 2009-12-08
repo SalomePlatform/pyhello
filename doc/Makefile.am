@@ -21,6 +21,33 @@
 #
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-dist_doc_DATA = dev_guide.pdf
+EXTRA_DIST += static
 
-EXTRA_DIST   += dev_guide.txt
+usr_docs: doxyfile
+	$(DOXYGEN) doxyfile
+
+docs: usr_docs
+
+dev_docs:
+
+clean-local:
+	@for filen in `find . -maxdepth 1` ; do			\
+	  case $${filen} in					\
+	    ./Makefile | ./doxyfile ) ;;			\
+	    . | .. ) ;;						\
+	    *) echo "Removing $${filen}" ; rm -rf $${filen} ;;	\
+	  esac ;						\
+	done ;
+
+install-data-local: usr_docs
+	$(INSTALL) -d $(DESTDIR)$(docdir)/gui/PYHELLO
+	@for filen in `find . -maxdepth 1` ; do			\
+	  case $${filen} in					\
+	    ./Makefile | ./doxyfile | ./doxyfile.bak ) ;;	\
+	    . | .. ) ;;						\
+	    *) echo "Installing $${filen}" ; cp -rp $${filen} $(DESTDIR)$(docdir)/gui/PYHELLO ;;\
+	  esac ;										\
+	done ;
+
+uninstall-local:
+	rm -rf $(DESTDIR)$(docdir)/gui/PYHELLO
