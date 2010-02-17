@@ -24,12 +24,17 @@
 <document>
   <section name="PYHELLO">
     <!-- Major module parameters -->
-    <parameter name="name"    value="PyHello"/>
-    <parameter name="icon"    value="PYHELLO.png"/>
-    <parameter name="library" value="SalomePyQtGUI"/>
+    <parameter name="name"            value="PyHello"/>
+    <parameter name="icon"            value="PYHELLO.png"/>
+    <parameter name="library"         value="SalomePyQtGUI"/>
+    <parameter name="documentation"   value="pyhello_help"/>
   </section>
   <section name="resources">
     <!-- Module resources -->
-    <parameter name="PYHELLO" value="${PYHELLO_ROOT_DIR}/share/salome/resources/pyhello"/>
+    <parameter name="PYHELLO"         value="${PYHELLO_ROOT_DIR}/share/salome/resources/pyhello"/>
+  </section>
+  <section name="pyhello_help" >
+    <parameter name="sub_menu"        value="Samples"/>
+    <parameter name="%1 User's Guide" value="${PYHELLO_ROOT_DIR}/share/doc/salome/gui/PYHELLO/index.html"/>
   </section>
 </document>
