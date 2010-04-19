@@ -29,7 +29,7 @@
 # Modified by : Marc Tajchman (CEA)
 # Created from configure.in.base
 #
-AC_INIT([Salome2 Project PYHELLO module], [5.1.3], [webmaster.salome@opencascade.com], [SalomePYHELLO])
+AC_INIT([Salome2 Project PYHELLO module], [5.1.4], [webmaster.salome@opencascade.com], [SalomePYHELLO])
 AC_CONFIG_AUX_DIR(adm_local/unix/config_files)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
