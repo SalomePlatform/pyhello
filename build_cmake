@@ -1,3 +1,4 @@
+#!/bin/sh
 #  Copyright (C) 2007-2010  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 #  This library is free software; you can redistribute it and/or
@@ -17,18 +18,10 @@
 #  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-#  SuperVisionTest AddComponent : example of component that adds two numbers
-#  File   : Makefile.in
-#  Author : , CEA
-#  Modified by : Alexander BORODIN (OCN) - autotools usage
-#
-include $(top_srcdir)/adm_local/unix/make_common_starter.am
-
-# Scripts to be installed
-dist_salomescript_SCRIPTS = \
-	PYHELLOGUI.py
-
-# resources files
-nodist_salomeres_DATA = \
-	PYHELLO_msg_en.qm \
-	PYHELLO_icons.qm
+CURRENT_DIR=`pwd`
+CONF_DIR=`echo $0 | sed -e "s,[^/]*$,,;s,/$,,;s,^$,.,"`
+cd ${CONF_DIR}
+python $KERNEL_ROOT_DIR/salome_adm/cmake_files/am2cmake.py --pyhello
+status=$?
+cd ${CURRENT_DIR}
+exit $status
