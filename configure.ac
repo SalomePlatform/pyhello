@@ -230,6 +230,7 @@ AC_OUTPUT([ \
   bin/Makefile \
   doc/Makefile \
   doc/doxyfile \
+  doc/static/header.html \
   src/Makefile \
   src/PYHELLO/Makefile \
   src/PYHELLOGUI/Makefile \
