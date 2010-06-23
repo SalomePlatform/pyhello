@@ -72,3 +72,4 @@ GENERATE_RTF      = NO
 #---------------------------------------------------------------------------
 TAGFILES          = 
 ALLEXTERNALS      = NO
+SEARCHENGINE      = NO
