@@ -19,11 +19,14 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-EXTRA_DIST += static
+EXTRA_DIST += images static/footer.html static/doxygen.css
+
+guidocdir = $(docdir)/gui/PYHELLO
+guidoc_DATA = images/head.png
 
 usr_docs: doxyfile
 	$(DOXYGEN) doxyfile
-
+	
 docs: usr_docs
 
 dev_docs:
@@ -32,7 +35,7 @@ clean-local:
 	@for filen in `find . -maxdepth 1` ; do			\
 	  case $${filen} in					\
 	    ./Makefile | ./doxyfile ) ;;			\
-	    . | .. ) ;;						\
+	    . | .. | ./static ) ;;				\
 	    *) echo "Removing $${filen}" ; rm -rf $${filen} ;;	\
 	  esac ;						\
 	done ;
@@ -42,7 +45,7 @@ install-data-local: usr_docs
 	@for filen in `find . -maxdepth 1` ; do			\
 	  case $${filen} in					\
 	    ./Makefile | ./doxyfile | ./doxyfile.bak ) ;;	\
-	    . | .. ) ;;						\
+	    . | .. | ./static ) ;;				\
 	    *) echo "Installing $${filen}" ; cp -rp $${filen} $(DESTDIR)$(docdir)/gui/PYHELLO ;;\
 	  esac ;										\
 	done ;

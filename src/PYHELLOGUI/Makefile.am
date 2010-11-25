@@ -31,4 +31,5 @@ dist_salomescript_SCRIPTS = \
 # resources files
 nodist_salomeres_DATA = \
 	PYHELLO_msg_en.qm \
+	PYHELLO_msg_fr.qm \
 	PYHELLO_icons.qm
