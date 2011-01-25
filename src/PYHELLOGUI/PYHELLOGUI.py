@@ -46,6 +46,7 @@ class GUIcontext:
     OPTION_1_ID      = 944
     OPTION_2_ID      = 945
     OPTION_3_ID      = 946
+    PASSWORD_ID      = 947
     PYHELLO_TB_ID    = 90
     DELETE_ALL_ID    = 951
     SHOW_ME_ID       = 952
@@ -53,6 +54,8 @@ class GUIcontext:
     RENAME_ME_ID     = 954
     # default object name
     DEFAULT_NAME     = "Object"
+    # default password
+    DEFAULT_PASSWD   = "Passwd"
 
     # constructor
     def __init__( self ):
@@ -89,6 +92,10 @@ class GUIcontext:
             sgPyQt.action( GUIcontext.OPTION_1_ID + default_mode ).setChecked( True )
         except:
             pass
+        a = sgPyQt.createSeparator()
+        a = sgPyQt.createAction( GUIcontext.PASSWORD_ID, "Display password", "Display password", "Display password" )
+        sgPyQt.createMenu( a, mid )
+        
         # the following action are used in context popup
         a = sgPyQt.createAction( GUIcontext.DELETE_ALL_ID, "Delete all", "Delete all", "Delete all objects" )
         a = sgPyQt.createAction( GUIcontext.SHOW_ME_ID,    "Show",       "Show",       "Show object name" )
@@ -205,6 +212,8 @@ def initialize():
         sgPyQt.addSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME )
     if not sgPyQt.hasSetting( "PYHELLO", "creation_mode"):
         sgPyQt.addSetting( "PYHELLO", "creation_mode", 0 )
+    if not sgPyQt.hasSetting( "PYHELLO", "Password"):
+        sgPyQt.addSetting( "PYHELLO", "Password", DEFAULT_PASSWD )
     pass
 
 # called when module is initialized
@@ -240,6 +249,8 @@ def createPreferences():
     indexes.append( QVariant(2) )
     sgPyQt.setPreferenceProperty( pid, "strings", QVariant( strings ) )
     sgPyQt.setPreferenceProperty( pid, "indexes", QVariant( indexes ) )
+    pid = sgPyQt.addPreference( "Password",  gid, SalomePyQt.PT_String,   "PYHELLO", "Password" )
+    sgPyQt.setPreferenceProperty( pid, "echo", QVariant( 2 ) )
     pass
 
 # called when module is activated
@@ -514,6 +525,15 @@ def Rename():
     pass
 
 ###
+# Display password stored in the preferences
+###
+def Password():
+  passwd = str( sgPyQt.stringSetting( "PYHELLO", "Password", GUIcontext.DEFAULT_PASSWD ).trimmed() )
+  QMessageBox.information(sgPyQt.getDesktop(),
+                          "Password",
+                          passwd)
+
+###
 # Commands dictionary
 ###
 dict_command = {
@@ -523,4 +543,5 @@ dict_command = {
     GUIcontext.SHOW_ME_ID       : ShowMe,
     GUIcontext.DELETE_ME_ID     : Delete,
     GUIcontext.RENAME_ME_ID     : Rename,
+    GUIcontext.PASSWORD_ID      : Password,
     }
