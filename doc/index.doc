@@ -297,7 +297,7 @@ BASEIDL_FILES target has to be modified to reach this goal.
 
 The idl file itself must define a CORBA module for which the name must
 be different from the module name to avoid name conflicts and define a
-CORBA interface that is derived at least from the Component interface  
+CORBA interface that is derived at least from the EngineComponent interface  
 of the Engines module. The name of the CORBA module will be
 \b PYHELLO_ORB and the name of the interface will be \b PYHELLO_Gen. 
 

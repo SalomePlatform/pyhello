@@ -38,7 +38,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     Construct an instance of PYHELLO module engine.
     The class PYHELLO implements CORBA interface PYHELLO_Gen (see PYHELLO_Gen.idl).
     It is inherited from the classes SALOME_ComponentPy_i (implementation of
-    Engines::Component CORBA interface - SALOME component) and SALOME_DriverPy_i
+    Engines::EngineComponent CORBA interface - SALOME component) and SALOME_DriverPy_i
     (implementation of SALOMEDS::Driver CORBA interface - SALOME module's engine).
     """
     def __init__ ( self, orb, poa, contID, containerName, instanceName, 
