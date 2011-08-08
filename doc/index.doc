@@ -139,7 +139,7 @@ other modules. This file is strongly recommended but is not essential
 for operation of the module.
 
 - bin/runAppli.in
-- bin/runSalome.py
+- bin/myrunSalome.py
 
 These files are not essential but make the example easier to
 use. These are scripts that can be used to run SALOME session with
@@ -577,7 +577,7 @@ immediately afterwards will be successful.
 
 The PYHELLO_ORB module has to be imported before making a request to
 load the component into the container, to obtain access to methods of
-the component.  This container is made accessible in the runSalome.py
+the component.  This container is made accessible in the myrunSalome.py
 by means of the \b container variable:
 
 <pre>
@@ -619,7 +619,7 @@ automatically generate XML description file from the IDL file.
 The method of loading the component is not very different from that
 is described above. The services of the LifeCycle module are used in
 this case instead of calling the container directly. The call sequence
-is contained in the runSalome.Py \b test() function.
+is contained in the myrunSalome.py \b test() function.
 
 <pre>
     c=test(clt)
