@@ -561,8 +561,8 @@ This command will not function unless the following environment
 variables have previously been set:
 
 <pre>
-export KERNEL_ROOT_DIR=<KERNEL installation path>
-export PYHELLO_ROOT_DIR=<PYHELLO installation path>
+export KERNEL_ROOT_DIR=<KERNEL_module_installation_dir>
+export PYHELLO_ROOT_DIR=<PYHELLO_module_installation_dir>
 </pre>
 
 \warning It is possible that the SALOME run will not reach the end.
