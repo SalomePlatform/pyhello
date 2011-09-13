@@ -28,6 +28,7 @@
     <parameter name="icon"            value="PYHELLO.png"/>
     <parameter name="library"         value="SalomePyQtGUI"/>
     <parameter name="documentation"   value="pyhello_help"/>
+    <parameter name="PYHELLO_VERSION" value="@VERSION@"/>
   </section>
   <section name="resources">
     <!-- Module resources -->

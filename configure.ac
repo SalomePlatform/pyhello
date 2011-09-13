@@ -246,6 +246,7 @@ AC_OUTPUT([ \
   src/PYHELLO/Makefile \
   src/PYHELLOGUI/Makefile \
   resources/Makefile \
+  resources/SalomeApp.xml \
   resources/PYHELLOCatalog.xml \
   idl/Makefile \
   Makefile \
