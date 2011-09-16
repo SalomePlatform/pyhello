@@ -28,14 +28,14 @@
     <parameter name="icon"            value="PYHELLO.png"/>
     <parameter name="library"         value="SalomePyQtGUI"/>
     <parameter name="documentation"   value="pyhello_help"/>
-    <parameter name="PYHELLO_VERSION" value="@VERSION@"/>
+    <parameter name="version"         value="@VERSION@"/>
   </section>
   <section name="resources">
     <!-- Module resources -->
-    <parameter name="PYHELLO"         value="${PYHELLO_ROOT_DIR}/share/salome/resources/pyhello"/>
+    <parameter name="PYHELLO"         value="%PYHELLO_ROOT_DIR%/share/salome/resources/pyhello"/>
   </section>
   <section name="pyhello_help" >
     <parameter name="sub_menu"        value="Samples"/>
-    <parameter name="%1 User's Guide" value="${PYHELLO_ROOT_DIR}/share/doc/salome/gui/PYHELLO/index.html"/>
+    <parameter name="%1 User's Guide" value="%PYHELLO_ROOT_DIR%/share/doc/salome/gui/PYHELLO/index.html"/>
   </section>
 </document>
