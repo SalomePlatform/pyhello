@@ -91,7 +91,7 @@ The following file structure is typical for the SALOME module:
      + handshake.png
      + stop.png
      + PYHELLOCatalog.xml.in
-     + SalomeApp.xml
+     + SalomeApp.xml.in
    + doc
      + Makefile.am
      + doxyfile.in
@@ -203,7 +203,7 @@ simplest way to create this file is to use Catalog Generator utility
 provided by the SALOME KERNEL module, that can automatically generate
 XML description file from the IDL file.
 
-- resources/SalomeApp.xml
+- resources/SalomeApp.xml.in
 
 This file is essential for the module. It provides some parameters of
 the module which define module behavior in SALOME. In particular it
@@ -214,6 +214,7 @@ module ("PYHELLO" in this case) with the following parameters:
     <parameter name="name" value="PyHello"/>
     <parameter name="icon" value="PYHELLO.png"/>
     <parameter name="library" value="SalomePyQtGUI"/>
+    <parameter name="version" value="@VERSION@"/>
   </section>
 \endcode
 
@@ -222,7 +223,8 @@ parameter defines a GUI icon of a module. The parameter "library"
 specifies the name of the C++ library representing the front-end of
 the module in the SALOME GUI desktop. The Python modules which do not
 implement its own C++ front-end GUI library should specify
-"SalomePyQtGUI" value in this parameter.
+"SalomePyQtGUI" value in this parameter. The "version" parameter 
+defines the version of the module.
 
 The section "resources" also specifies the directory that contains
 resources of a module (icons, translation files, etc).
@@ -230,6 +232,16 @@ resources of a module (icons, translation files, etc).
 \code
   <section name="resources">
     <parameter name="PYHELLO" value="${PYHELLO_ROOT_DIR}/share/salome/resources/pyhello"/>
+  </section>
+\endcode
+
+The section [module_name]_help provides information on the location of 
+the help page and the eventual sub-menu in the Help menu.
+
+\code
+  <section name="pyhello_help" >
+    <parameter name="sub_menu"        value="Samples"/>
+    <parameter name="%1 User's Guide" value="%PYHELLO_ROOT_DIR%/share/doc/salome/gui/PYHELLO/index.html"/>
   </section>
 \endcode
 
