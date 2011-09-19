@@ -213,7 +213,7 @@ def initialize():
     if not sgPyQt.hasSetting( "PYHELLO", "creation_mode"):
         sgPyQt.addSetting( "PYHELLO", "creation_mode", 0 )
     if not sgPyQt.hasSetting( "PYHELLO", "Password"):
-        sgPyQt.addSetting( "PYHELLO", "Password", DEFAULT_PASSWD )
+        sgPyQt.addSetting( "PYHELLO", "Password", GUIcontext.DEFAULT_PASSWD )
     pass
 
 # called when module is initialized
