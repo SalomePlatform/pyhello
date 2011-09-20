@@ -29,8 +29,7 @@ dist_salomeres_DATA = \
 	PYHELLO_small.png \
 	ExecPYHELLO.png \
 	handshake.png \
-	stop.png \
-	$(top_builddir)/resources/SalomeApp.xml
+	stop.png
 
 # VSR: little trick to avoid putting if PYHELLOCatalog.xml to the distribution archive
-nodist_salomeres_SCRIPTS = PYHELLOCatalog.xml
+nodist_salomeres_SCRIPTS = PYHELLOCatalog.xml SalomeApp.xml
