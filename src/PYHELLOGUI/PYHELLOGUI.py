@@ -350,6 +350,39 @@ def engineIOR():
     if verbose() : print "PYHELLOGUI.engineIOR()"
     return getEngineIOR()
 
+# called to check if object can be dragged
+# returns True if drag operation is allowed for this object
+def isDraggable(what):
+    if verbose() : print "PYHELLOGUI.isDraggable()"
+    # return True if object is draggable
+    return False
+
+# called to check if object allows dropping on it
+# returns True if drop operation is allowed for this object
+def isDropAccepted(where):
+    if verbose() : print "PYHELLOGUI.isDropAccepted()"
+    # return True if object accept drops
+    return False
+
+# called when drag and drop operation is finished
+# performs corresponding data re-arrangement if allowed
+def dropObjects(what, where, row, action):
+    if verbose() :
+        print "PYHELLOGUI.dropObjects()"
+        # 'what' is a list of entries of objects being dropped
+        for i in what: print "- dropped:", i
+        # 'where' is a parent object's entry
+        print "- dropping on:", where
+        # 'row' is an position in the parent's children list;
+        # -1 if appending to the end of children list is performed
+        print "- dropping position:", row
+        # 'action' is a dropping action being performed:
+        # - 0x01 (Qt::CopyAction) for copy
+        # - 0x02 (Qt::MoveAction) for move
+        print "- drop action:", action
+        pass
+    pass
+
 ################################################
 # GUI actions implementation
 ################################################
