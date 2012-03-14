@@ -45,6 +45,7 @@ from LifeCycleCORBA import LifeCycleCORBA
 import SALOMEDS
 import SALOMEDS_Attributes_idl
 import PYHELLO_ORB
+import os
 
 ###
 # Get PYHELLO module's ID
