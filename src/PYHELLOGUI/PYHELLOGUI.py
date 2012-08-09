@@ -1,24 +1,25 @@
-#  Copyright (C) 2007-2008  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2007-2012  CEA/DEN, EDF R&D, OPEN CASCADE
 #
-#  Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
-#  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+# Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
+# CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
 #
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 2.1 of the License.
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License.
 #
-#  This library is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
-#  You should have received a copy of the GNU Lesser General Public
-#  License along with this library; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-#  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
+# See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+
 # ---
 # File   : PYHELLOGUI.py
 # Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
@@ -29,13 +30,7 @@ import os
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-from omniORB import CORBA
-from SALOME_NamingServicePy import *
-from LifeCycleCORBA import *
-import SALOMEDS
-import SALOMEDS_Attributes_idl
-
-import PYHELLO_ORB
+from PYHELLO_utils import *
 
 ################################################
 # GUI context class
@@ -43,14 +38,6 @@ import PYHELLO_ORB
 ################################################
 
 class GUIcontext:
-    # module name
-    MODULE_NAME      = "PYHELLO"
-    # module icon
-    MODULE_PIXMAP    = "PYHELLO_small.png"
-    # data objects IDs
-    MODULE_ID        = 1000
-    OBJECT_ID        = 1010
-    FOREIGN_ID       = -1
     # menus/toolbars/actions IDs
     PYHELLO_MENU_ID  = 90
     HELLO_ID         = 941
@@ -59,6 +46,7 @@ class GUIcontext:
     OPTION_1_ID      = 944
     OPTION_2_ID      = 945
     OPTION_3_ID      = 946
+    PASSWORD_ID      = 947
     PYHELLO_TB_ID    = 90
     DELETE_ALL_ID    = 951
     SHOW_ME_ID       = 952
@@ -66,6 +54,8 @@ class GUIcontext:
     RENAME_ME_ID     = 954
     # default object name
     DEFAULT_NAME     = "Object"
+    # default password
+    DEFAULT_PASSWD   = "Passwd"
 
     # constructor
     def __init__( self ):
@@ -102,6 +92,10 @@ class GUIcontext:
             sgPyQt.action( GUIcontext.OPTION_1_ID + default_mode ).setChecked( True )
         except:
             pass
+        a = sgPyQt.createSeparator()
+        a = sgPyQt.createAction( GUIcontext.PASSWORD_ID, "Display password", "Display password", "Display password" )
+        sgPyQt.createMenu( a, mid )
+        
         # the following action are used in context popup
         a = sgPyQt.createAction( GUIcontext.DELETE_ALL_ID, "Delete all", "Delete all", "Delete all objects" )
         a = sgPyQt.createAction( GUIcontext.SHOW_ME_ID,    "Show",       "Show",       "Show object name" )
@@ -119,7 +113,7 @@ __study2context__   = {}
 # current context
 __current_context__ = None
 # object counter
-__id__ = 0
+__objectid__ = 0
 
 ################################################
        
@@ -133,44 +127,9 @@ sg = libSALOME_Swig.SALOMEGUI_Swig()
 
 ################################################
 
-# init ORB
-orb = CORBA.ORB_init( [''], CORBA.ORB_ID )
-
-# create naming service instance
-naming_service = SALOME_NamingServicePy_i( orb )
-
-# create life cycle CORBA instance
-lcc = LifeCycleCORBA( orb )
-
-# get study manager
-obj = naming_service.Resolve( '/myStudyManager' )
-studyManager = obj._narrow( SALOMEDS.StudyManager )
-
 ################################################
 # Internal methods
 ################################################
-
-###
-# Check verbose mode
-### 
-__verbose__ = None
-def verbose():
-    global __verbose__
-    if __verbose__ is None:
-        try:
-            __verbose__ = int( os.getenv('SALOME_VERBOSE', 0) )
-        except:
-            __verbose__ = 0
-            pass
-        pass
-    return __verbose__
-
-###
-# get PYHELLO engine
-###
-def _getEngine():
-    engine = lcc.FindOrLoadComponent( "FactoryServerPy", GUIcontext.MODULE_NAME )
-    return engine
 
 ###
 # get active study ID
@@ -183,7 +142,7 @@ def _getStudyId():
 ###
 def _getStudy():
     studyId = _getStudyId()
-    study = studyManager.GetStudyByID( studyId )
+    study = getStudyManager().GetStudyByID( studyId )
     return study
 
 ###
@@ -201,29 +160,6 @@ def _hasChildren( sobj ):
             pass
         pass
     return False
-
-###
-# finds or creates component object
-###
-def _findOrCreateComponent():
-    study = _getStudy()
-    father = study.FindComponent( GUIcontext.MODULE_NAME )
-    if father is None:
-        builder = study.NewBuilder()
-        father = builder.NewComponent( GUIcontext.MODULE_NAME )
-        attr = builder.FindOrCreateAttribute( father, "AttributeName" )
-        attr.SetValue( GUIcontext.MODULE_NAME )
-        attr = builder.FindOrCreateAttribute( father, "AttributePixMap" )
-        attr.SetPixMap( GUIcontext.MODULE_PIXMAP )
-        attr = builder.FindOrCreateAttribute( father, "AttributeLocalID" )
-        attr.SetValue( GUIcontext.MODULE_ID )
-        try:
-            builder.DefineComponentInstance( father, _getEngine() )
-            pass
-        except:
-            pass
-        pass
-    return father
 
 ###
 # get current GUI context
@@ -258,22 +194,8 @@ def _incObjToMap( m, id ):
 def _getSelection():
     selcount = sg.SelectedCount()
     seltypes = {}
-    study = _getStudy()
     for i in range( selcount ):
-        entry = sg.getSelected( i )
-        if entry:
-            sobj = study.FindObjectID( entry )
-            if sobj is not None:
-                test, anAttr = sobj.FindAttribute( "AttributeLocalID" )
-                if test:
-                    ID = anAttr._narrow( SALOMEDS.AttributeLocalID ).Value()
-                    if ID >= 0:
-                        _incObjToMap( seltypes, ID )
-                        continue
-                    pass
-                pass
-            pass
-        _incObjToMap( seltypes, GUIcontext.FOREIGN_ID )
+        _incObjToMap( seltypes, getObjectID( _getStudy(), sg.getSelected( i ) ) )
         pass
     return selcount, seltypes
 
@@ -290,6 +212,8 @@ def initialize():
         sgPyQt.addSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME )
     if not sgPyQt.hasSetting( "PYHELLO", "creation_mode"):
         sgPyQt.addSetting( "PYHELLO", "creation_mode", 0 )
+    if not sgPyQt.hasSetting( "PYHELLO", "Password"):
+        sgPyQt.addSetting( "PYHELLO", "Password", GUIcontext.DEFAULT_PASSWD )
     pass
 
 # called when module is initialized
@@ -325,6 +249,8 @@ def createPreferences():
     indexes.append( QVariant(2) )
     sgPyQt.setPreferenceProperty( pid, "strings", QVariant( strings ) )
     sgPyQt.setPreferenceProperty( pid, "indexes", QVariant( indexes ) )
+    pid = sgPyQt.addPreference( "Password",  gid, SalomePyQt.PT_String,   "PYHELLO", "Password" )
+    sgPyQt.setPreferenceProperty( pid, "echo", QVariant( 2 ) )
     pass
 
 # called when module is activated
@@ -353,13 +279,13 @@ def createPopupMenu( popup, context ):
     ctx = _setContext( _getStudyId() )
     study = _getStudy()
     selcount, selected = _getSelection()
-    print selcount, selected
+    if verbose() : print selcount, selected
     if selcount == 1:
         # one object is selected
-        if GUIcontext.MODULE_ID in selected:
+        if moduleID() in selected:
             # menu for component
             popup.addAction( sgPyQt.action( GUIcontext.DELETE_ALL_ID ) )
-        elif GUIcontext.OBJECT_ID in selected:
+        elif objectID() in selected:
             # menu for object
             popup.addAction( sgPyQt.action( GUIcontext.SHOW_ME_ID ) )
             popup.addAction( sgPyQt.action( GUIcontext.RENAME_ME_ID ) )
@@ -370,10 +296,10 @@ def createPopupMenu( popup, context ):
     elif selcount > 1:
         # several objects are selected
         if len( selected ) == 1:
-            if GUIcontext.MODULE_ID in selected:
+            if moduleID() in selected:
                 # menu for component
                 popup.addAction( sgPyQt.action( GUIcontext.DELETE_ALL_ID ) )
-            elif GUIcontext.OBJECT_ID in selected:
+            elif objectID() in selected:
                 # menu for list of objects
                 popup.addAction( sgPyQt.action( GUIcontext.DELETE_ME_ID ) )
                 pass
@@ -418,6 +344,45 @@ def viewClosed( viewID ):
     if verbose() : print "PYHELLOGUI.viewClosed(): %d" % viewID
     pass
 
+# called when study is opened
+# returns engine IOR
+def engineIOR():
+    if verbose() : print "PYHELLOGUI.engineIOR()"
+    return getEngineIOR()
+
+# called to check if object can be dragged
+# returns True if drag operation is allowed for this object
+def isDraggable(what):
+    if verbose() : print "PYHELLOGUI.isDraggable()"
+    # return True if object is draggable
+    return False
+
+# called to check if object allows dropping on it
+# returns True if drop operation is allowed for this object
+def isDropAccepted(where):
+    if verbose() : print "PYHELLOGUI.isDropAccepted()"
+    # return True if object accept drops
+    return False
+
+# called when drag and drop operation is finished
+# performs corresponding data re-arrangement if allowed
+def dropObjects(what, where, row, action):
+    if verbose() :
+        print "PYHELLOGUI.dropObjects()"
+        # 'what' is a list of entries of objects being dropped
+        for i in what: print "- dropped:", i
+        # 'where' is a parent object's entry
+        print "- dropping on:", where
+        # 'row' is an position in the parent's children list;
+        # -1 if appending to the end of children list is performed
+        print "- dropping position:", row
+        # 'action' is a dropping action being performed:
+        # - 0x01 (Qt::CopyAction) for copy
+        # - 0x02 (Qt::MoveAction) for move
+        print "- drop action:", action
+        pass
+    pass
+
 ################################################
 # GUI actions implementation
 ################################################
@@ -445,12 +410,14 @@ class MyDialog( QDialog ):
         
         hb1 = QHBoxLayout( self )
         bOk = QPushButton( "&OK", self )
+        bOk.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_HANDSHAKE' ) )
         self.connect( bOk, SIGNAL( 'clicked()' ), self, SLOT( 'accept()' ) )
         hb1.addWidget( bOk )
         
         hb1.addStretch( 10 )
         
         bCancel = QPushButton( "&Cancel", self )
+        bCancel.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_STOP' ) )
         self.connect( bCancel, SIGNAL( 'clicked()' ), self, SLOT( 'close()' ) )
         hb1.addWidget( bCancel )
         
@@ -461,7 +428,7 @@ class MyDialog( QDialog ):
     def accept( self ):
         name = str( self.entry.text() )
         if name != "":
-            banner = _getEngine().makeBanner( name )
+            banner = getEngine().makeBanner( name )
             QMessageBox.information( self, 'Info', banner )
             self.close()
         else:
@@ -482,6 +449,7 @@ def ShowHELLO():
 # Create new object
 ###
 def CreateObject():
+    global __objectid__
     default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ).trimmed() )
     try:
         if sgPyQt.action( GUIcontext.OPTION_3_ID ).isChecked():
@@ -495,28 +463,19 @@ def CreateObject():
             name = str( name.trimmed() )
         elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isChecked():
             # generate object name
-            global __id__
-            __id__  = __id__ + 1
-            name = "%s %d" % ( default_name, __id__ )
+            __objectid__  = __objectid__ + 1
+            name = "%s %d" % ( default_name, __objectid__ )
         else:
             name = default_name
             pass
         pass
     except:
         # generate object name
-        global __id__
-        __id__  = __id__ + 1
-        name = "%s %d" % ( default_name, __id__ )
+        __objectid__  = __objectid__ + 1
+        name = "%s %d" % ( default_name, __objectid__ )
         pass
     if not name: return
-    study   = _getStudy()
-    builder = study.NewBuilder()
-    father  = _findOrCreateComponent()
-    object  = builder.NewObject( father )
-    attr    = builder.FindOrCreateAttribute( object, "AttributeName" )
-    attr.SetValue( name )
-    attr    = builder.FindOrCreateAttribute( object, "AttributeLocalID" )
-    attr.SetValue( GUIcontext.OBJECT_ID )
+    getEngine().createObject( _getStudy(), name )
     sg.updateObjBrowser( True )
     pass
 
@@ -525,7 +484,7 @@ def CreateObject():
 ###
 def DeleteAll():
     study = _getStudy()
-    father = study.FindComponent( GUIcontext.MODULE_NAME )
+    father = study.FindComponent( moduleName() )
     if father:
         iter = study.NewChildIterator( father )
         builder = study.NewBuilder()
@@ -599,6 +558,15 @@ def Rename():
     pass
 
 ###
+# Display password stored in the preferences
+###
+def Password():
+  passwd = str( sgPyQt.stringSetting( "PYHELLO", "Password", GUIcontext.DEFAULT_PASSWD ).trimmed() )
+  QMessageBox.information(sgPyQt.getDesktop(),
+                          "Password",
+                          passwd)
+
+###
 # Commands dictionary
 ###
 dict_command = {
@@ -608,4 +576,5 @@ dict_command = {
     GUIcontext.SHOW_ME_ID       : ShowMe,
     GUIcontext.DELETE_ME_ID     : Delete,
     GUIcontext.RENAME_ME_ID     : Rename,
+    GUIcontext.PASSWORD_ID      : Password,
     }

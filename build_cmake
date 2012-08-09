@@ -1,3 +1,4 @@
+#!/bin/sh
 # Copyright (C) 2007-2012  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
@@ -17,7 +18,10 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-include $(top_srcdir)/adm_local/unix/make_common_starter.am
-
-dist_admlocalm4_DATA =	\
-	check_PYHELLO.m4
+CURRENT_DIR=`pwd`
+CONF_DIR=`echo $0 | sed -e "s,[^/]*$,,;s,/$,,;s,^$,.,"`
+cd ${CONF_DIR}
+python $KERNEL_ROOT_DIR/salome_adm/cmake_files/am2cmake.py --pyhello
+status=$?
+cd ${CURRENT_DIR}
+exit $status

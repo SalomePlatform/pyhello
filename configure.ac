@@ -1,24 +1,22 @@
-#  Copyright (C) 2007-2008  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2007-2012  CEA/DEN, EDF R&D, OPEN CASCADE
 #
-#  Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
-#  CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License.
 #
-#  This library is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Lesser General Public
-#  License as published by the Free Software Foundation; either
-#  version 2.1 of the License.
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
-#  This library is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  Lesser General Public License for more details.
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
-#  You should have received a copy of the GNU Lesser General Public
-#  License along with this library; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+# See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-#  See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
-#
+
 #  PLEASE DO NOT MODIFY configure.in FILE
 #  ALL CHANGES WILL BE DISCARDED BY THE NEXT
 #  build_configure COMMAND
@@ -29,14 +27,16 @@
 # Modified by : Marc Tajchman (CEA)
 # Created from configure.in.base
 #
-AC_INIT([Salome2 Project PYHELLO module], [5.1.0], [webmaster.salome@opencascade.com], [SalomePYHELLO])
-AC_CONFIG_AUX_DIR(salome_adm/unix/config_files)
+AC_INIT([Salome2 Project PYHELLO module], [6.5.0], [webmaster.salome@opencascade.com], [SalomePYHELLO])
+AC_CONFIG_AUX_DIR(adm_local/unix/config_files)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wno-portability])
 
 XVERSION=`echo $VERSION | awk -F. '{printf("0x%02x%02x%02x",$1,$2,$3)}'`
 AC_SUBST(XVERSION)
+VERSION_DEV=1
+AC_SUBST(VERSION_DEV)
 
 # set up MODULE_NAME variable for dynamic construction of directories (resources, etc.)
 MODULE_NAME=pyhello
@@ -81,6 +81,7 @@ echo
 
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
+AC_LOCAL_INSTALL
 dnl 
 dnl libtool macro check for CC, LD, NM, LN_S, RANLIB, STRIP + for shared libraries
 
@@ -102,7 +103,7 @@ dnl Fix up the INSTALL macro if it s a relative path. We want the
 dnl full-path to the binary instead.
 case "$INSTALL" in
    *install-sh*)
-      INSTALL='\${KERNEL_ROOT_DIR}'/salome_adm/unix/config_files/install-sh
+      INSTALL='\${KERNEL_ROOT_DIR}'/adm_local/unix/config_files/install-sh
       ;;
 esac
 
@@ -147,6 +148,14 @@ CHECK_QT
 
 echo
 echo ---------------------------------------------
+echo Testing html generators
+echo ---------------------------------------------
+echo
+
+CHECK_HTML_GENERATORS
+
+echo
+echo ---------------------------------------------
 echo Testing Kernel
 echo ---------------------------------------------
 echo
@@ -168,12 +177,11 @@ echo ---------------------------------------------
 echo
 
 CHECK_CORBA_IN_GUI
+
 if test "x${CORBA_IN_GUI}" != "xyes"; then
-  echo "failed : For configure PYHELLO1 module necessary full GUI !"
+  echo "failed : For configure PYHELLO module necessary full GUI !"
   exit
 fi
-
-
 
 echo
 echo ---------------------------------------------
@@ -182,7 +190,7 @@ echo ---------------------------------------------
 echo
 
 echo Configure
-variables="python_ok omniORB_ok qt_ok Kernel_ok"
+variables="python_ok omniORB_ok qt_ok doxygen_ok Kernel_ok"
 
 for var in $variables
 do
@@ -211,24 +219,37 @@ AC_OUTPUT_COMMANDS([ \
       chmod +x ./bin/*; \
 ])
 
+AC_HACK_LIBTOOL
+AC_CONFIG_COMMANDS([hack_libtool],[
+sed -i "s%^CC=\"\(.*\)\"%hack_libtool (){ \n\
+  $(pwd)/hack_libtool \1 \"\$[@]\" \n\
+}\n\
+CC=\"hack_libtool\"%g" libtool
+sed -i "s%\(\s*\)for searchdir in \$newlib_search_path \$lib_search_path \$sys_lib_search_path \$shlib_search_path; do%\1searchdirs=\"\$newlib_search_path \$lib_search_path \$sys_lib_search_path \$shlib_search_path\"\n\1for searchdir in \$searchdirs; do%g" libtool
+sed -i "s%\(\s*\)searchdirs=\"\$newlib_search_path \$lib_search_path \(.*\)\"%\1searchdirs=\"\$newlib_search_path \$lib_search_path\"\n\1sss_beg=\"\"\n\1sss_end=\"\2\"%g" libtool
+sed -i "s%\(\s*\)\(for searchdir in \$searchdirs; do\)%\1for sss in \$searchdirs; do\n\1  if ! test -d \$sss; then continue; fi\n\1  ssss=\$(cd \$sss; pwd)\n\1  if test \"\$ssss\" != \"\" \&\& test -d \$ssss; then\n\1    case \$ssss in\n\1      /usr/lib | /usr/lib64 ) ;;\n\1      * ) sss_beg=\"\$sss_beg \$ssss\" ;;\n\1    esac\n\1  fi\n\1done\n\1searchdirs=\"\$sss_beg \$sss_end\"\n\1\2%g" libtool
+],[])
+
 # This list is initiated using autoscan and must be updated manually
 # when adding a new file <filename>.in to manage. When you execute
 # autoscan, the Makefile list is generated in the output file configure.scan.
 # This could be helpfull to update de configuration.
 AC_OUTPUT([ \
-  ./salome_adm/unix/SALOMEconfig.h \
-  ./adm_local/Makefile \
-  ./adm_local/unix/Makefile \
-  ./adm_local/unix/config_files/Makefile \
-  ./bin/VERSION \
-  ./bin/runAppli \
-  ./bin/Makefile \
-  ./doc/Makefile \
-  ./src/Makefile \
-  ./src/PYHELLO/Makefile \
-  ./src/PYHELLOGUI/Makefile \
-  ./resources/Makefile \
-  ./resources/PYHELLOCatalog.xml \
-  ./idl/Makefile \
+  adm_local/Makefile \
+  adm_local/unix/Makefile \
+  adm_local/unix/config_files/Makefile \
+  bin/VERSION \
+  bin/runAppli \
+  bin/Makefile \
+  doc/Makefile \
+  doc/doxyfile \
+  doc/static/header.html \
+  src/Makefile \
+  src/PYHELLO/Makefile \
+  src/PYHELLOGUI/Makefile \
+  resources/Makefile \
+  resources/SalomeApp.xml \
+  resources/PYHELLOCatalog.xml \
+  idl/Makefile \
   Makefile \
 ])
