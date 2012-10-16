@@ -52,6 +52,13 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
         pass
 
     """
+    Get version information.
+    """
+    def getVersion( self ):
+        import salome_version
+        return salome_version.getVersion("PYHELLO", True)
+
+    """
     Generate hello banner.
     """
     def makeBanner( self, name ):
