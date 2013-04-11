@@ -19,7 +19,7 @@
 
 include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-EXTRA_DIST += images static/footer.html static/doxygen.css
+EXTRA_DIST += images static/footer.html static/salome_extra.css
 
 guidocdir = $(docdir)/gui/PYHELLO
 guidoc_DATA = images/head.png
