@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2013  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,10 +17,25 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-#  File   : Makefile.in
-#  Author : (CEA)
-#  Modified by : Alexander BORODIN (OCN) - autotools usage
-#
-include $(top_srcdir)/adm_local/unix/make_common_starter.am
+INCLUDE(UseOmniORB)  # Provided by KERNEL
 
-SUBDIRS = PYHELLO PYHELLOGUI
+INCLUDE_DIRECTORIES(
+  ${OMNIORB_INCLUDE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${KERNEL_INCLUDE_DIRS}
+)
+
+SET(SalomeIDLPYHELLO_IDLSOURCES
+  PYHELLO_Gen.idl
+)
+
+SET(_idl_include_dirs
+  ${KERNEL_ROOT_DIR}/idl/salome
+)
+
+SET(_idl_link_flags
+  ${KERNEL_SalomeIDLKernel}
+)
+
+OMNIORB_ADD_MODULE(SalomeIDLPYHELLO "${SalomeIDLPYHELLO_IDLSOURCES}" "${_idl_include_dirs}" "${_idl_link_flags}")
+INSTALL(TARGETS SalomeIDLPYHELLO EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})

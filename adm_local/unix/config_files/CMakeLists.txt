@@ -1,5 +1,8 @@
 # Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
 #
+# Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
+# CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
@@ -17,14 +20,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-#  SuperVisionTest AddComponent : example of component that adds two numbers
-#  File   : Makefile.in
-#  Author : , CEA
-#  Modified by : Alexander BORODIN (OCN) - autotools usage
-#
-include $(top_srcdir)/adm_local/unix/make_common_starter.am
-
-# Scripts to be installed
-dist_salomescript_SCRIPTS = \
-	PYHELLO.py \
-	PYHELLO_utils.py
+SET(_m4_data
+  check_PYHELLO.m4
+)
+            
+INSTALL(FILES ${_m4_data} DESTINATION ${SALOME_INSTALL_AMCONFIG_LOCAL}/config_files)

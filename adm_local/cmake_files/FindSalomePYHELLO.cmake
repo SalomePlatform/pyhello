@@ -16,20 +16,15 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-
-# -* Makefile *- 
-# Author : Patrick GOLDBRONN (CEA)
-# Date : 28/06/2001
-#  Modified by : Alexander BORODIN (OCN) - autotools usage
 #
-include $(top_srcdir)/adm_local/unix/make_common_starter.am
 
-dist_salomeres_DATA = \
-	PYHELLO.png \
-	PYHELLO_small.png \
-	ExecPYHELLO.png \
-	handshake.png \
-	stop.png
+IF(NOT SalomePYHELLO_FIND_QUIETLY)
+  MESSAGE(STATUS "Looking for Salome PYHELLO ...")
+ENDIF()
 
-# VSR: little trick to avoid putting if PYHELLOCatalog.xml to the distribution archive
-nodist_salomeres_SCRIPTS = PYHELLOCatalog.xml SalomeApp.xml
+SET(CMAKE_PREFIX_PATH "${PYHELLO_ROOT_DIR}")
+SALOME_FIND_PACKAGE(SalomePYHELLO SalomePYHELLO CONFIG)
+
+IF(NOT SalomePYHELLO_FIND_QUIETLY)
+  MESSAGE(STATUS "Found Salome PYHELLO: ${PYHELLO_ROOT_DIR}")
+ENDIF()

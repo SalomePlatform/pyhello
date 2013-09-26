@@ -1,4 +1,4 @@
-# Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2013  CEA/DEN, EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,15 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-include $(top_srcdir)/adm_local/unix/make_common_starter.am
+SALOME_CONFIGURE_FILE(VERSION.in VERSION INSTALL ${SALOME_INSTALL_BINS})
+SALOME_CONFIGURE_FILE(runAppli.in runAppli INSTALL ${SALOME_INSTALL_BINS})
 
-SUBDIRS = config_files
+# ===============================================================
+# Files to be installed
+# ===============================================================
+
+SET(_bin_scripts
+  myrunSalome.py
+)
+
+SALOME_INSTALL_SCRIPTS("${_bin_scripts}" ${SALOME_INSTALL_SCRIPT_SCRIPTS})

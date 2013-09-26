@@ -1,4 +1,3 @@
-#!/bin/sh
 # Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
@@ -17,11 +16,8 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+#
 
-CURRENT_DIR=`pwd`
-CONF_DIR=`echo $0 | sed -e "s,[^/]*$,,;s,/$,,;s,^$,.,"`
-cd ${CONF_DIR}
-python $KERNEL_ROOT_DIR/salome_adm/cmake_files/deprecated/am2cmake.py --pyhello
-status=$?
-cd ${CURRENT_DIR}
-exit $status
+SET(PYHELLO_CXXFLAGS -I${PYHELLO_ROOT_DIR}/include/salome)
+
+FIND_LIBRARY(SalomeIDLPYHELLO SalomeIDLPYHELLO ${PYHELLO_ROOT_DIR}/lib/salome)

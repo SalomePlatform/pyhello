@@ -214,7 +214,7 @@ module ("PYHELLO" in this case) with the following parameters:
     <parameter name="name" value="PyHello"/>
     <parameter name="icon" value="PYHELLO.png"/>
     <parameter name="library" value="SalomePyQtGUI"/>
-    <parameter name="version" value="@VERSION@"/>
+    <parameter name="version" value="@SALOMEPYHELLO_VERSION@"/>
   </section>
 \endcode
 

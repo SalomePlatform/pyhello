@@ -1,5 +1,4 @@
-#!/bin/sh
-# Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2013  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,11 +17,13 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-rm -rf autom4te.cache aclocal.m4 configure make_config
-find . -name "*~" -print -exec rm {} \;
-find . -name "*.pyc" -print -exec rm {} \;
-#exit
-# ==================== ON SORT AVANT
+# --- scripts ---
 
-find . -name Makefile.in | xargs rm -f
-( cd adm_local/unix/config_files && rm -f config.* depcomp install-sh ltmain.sh missing py-compile )
+# scripts / static
+SET(_bin_SCRIPTS
+  PYHELLO.py
+  PYHELLO_utils.py
+)
+
+# --- rules ---
+SALOME_INSTALL_SCRIPTS("${_bin_SCRIPTS}" ${SALOME_INSTALL_SCRIPT_PYTHON})

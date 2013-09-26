@@ -39,7 +39,7 @@
 		<component-username>PYHELLO GUI</component-username>
                 <component-type>Data</component-type>
                 <component-author>C. Caremoli</component-author>
-                <component-version>@VERSION@</component-version>
+                <component-version>@SALOMEPYHELLO_VERSION@</component-version>
                 <component-comment>EDF - RD</component-comment>
                 <component-multistudy>1</component-multistudy>
                 <component-icone>PYHELLO.png</component-icone>
