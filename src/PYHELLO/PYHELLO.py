@@ -28,6 +28,8 @@
 import PYHELLO_ORB__POA
 import SALOME_ComponentPy
 import SALOME_DriverPy
+import SALOMEDS
+from SALOME_DataContainerPy import *
 
 from PYHELLO_utils import *
 
@@ -69,6 +71,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     Create object.
     """
     def createObject( self, study, name ):
+        self._createdNew = True # used for getModifiedData method
         builder = study.NewBuilder()
         father  = findOrCreateComponent( study )
         object  = builder.NewObject( father )
@@ -106,3 +109,40 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
         abuffer.append( "  pass" )
         abuffer.append( "\0" )
         return ("\n".join( abuffer ), 1)
+
+    """
+    Import file to restore module data
+    """
+    def importData(self, studyId, dataContainer, options):
+      # get study by Id
+      obj = self._naming_service.Resolve("myStudyManager")
+      myStudyManager = obj._narrow(SALOMEDS.StudyManager)
+      study = myStudyManager.GetStudyByID(studyId)
+      # create all objects from the imported stream
+      stream = dataContainer.get()
+      for objname in stream.split("\n"):
+        if len(objname) != 0:
+          self.createObject(study, objname)
+      self._createdNew = False # to store the modification of the study information later
+      return ["objects"] # identifier what is in this file
+
+    def getModifiedData(self, studyId):
+      if self._createdNew:
+        # get study by Id
+        obj = self._naming_service.Resolve("myStudyManager")
+        myStudyManager = obj._narrow(SALOMEDS.StudyManager)
+        study = myStudyManager.GetStudyByID(studyId)
+        # iterate all objects to get their names and store this information in stream
+        stream=""
+        father = study.FindComponent( moduleName() )
+        if father:
+            iter = study.NewChildIterator( father )
+            while iter.More():
+                name = iter.Value().GetName()
+                stream += name + "\n"
+                iter.Next()
+        # store stream to the temporary file to send it in DataContainer
+        dataContainer = SALOME_DataContainerPy_i(stream, "", "objects", False, True)
+        aVar = dataContainer._this()
+        return [aVar]
+      return []
