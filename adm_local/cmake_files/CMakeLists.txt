@@ -23,7 +23,6 @@
 
 # These files are data, module or lib files
 SET(_adm_data
-  FindPYHELLO.cmake
   FindSalomePYHELLO.cmake
 )
 INSTALL(FILES ${_adm_data} DESTINATION ${SALOME_INSTALL_CMAKE_LOCAL})
