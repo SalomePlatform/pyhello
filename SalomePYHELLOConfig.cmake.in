@@ -40,6 +40,9 @@ SET_AND_CHECK(PYHELLO_INCLUDE_DIRS "${PYHELLO_ROOT_DIR_EXP}/@SALOME_INSTALL_HEAD
 SET(PYHELLO_INCLUDE_DIRS "${PYHELLO_INCLUDE_DIRS};@_SalomePYHELLO_EXTRA_HEADERS@")
 SET(PYHELLO_DEFINITIONS "@GUI_DEFINITIONS@")
 
+# Package specific environment variables
+@_SalomePYHELLO_EXTRA_ENV_FULL@
+
 # Load the dependencies for the libraries of @PROJECT_NAME@ 
 # (contains definitions for IMPORTED targets). This is only 
 # imported if we are not built as a subproject (in this case targets are already there)
