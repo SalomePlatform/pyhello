@@ -38,7 +38,7 @@ The steps in the development are as follows:
 - configure the module so that the component is known to SALOME
 - add a graphic GUI
 
-\ref main "<< Previous"<br>\ref tree_structure ">> Next"
+\ref index "<< Previous"<br>\ref tree_structure ">> Next"
 
 \page tree_structure Create the module tree structure
 
@@ -53,38 +53,35 @@ The following file structure is typical for the SALOME module:
 
 <pre>
 + PYHELLO1_SRC
-   + build_configure
-   + configure.ac
-   + Makefile.am
+   + CMakeLists.txt
+   + SalomePYHELLOConfig.cmake.in
    + adm_local
-     + Makefile.am
-     + unix
-       + Makefile.am
-       + make_common_starter.am
-       + config_files
-         + Makefile.am
-         + check_PYHELLO.m4
+     + CMakeLists.txt
+     + cmake_files
+       + CMakeLists.txt
+       + FindSalomePYHELLO.cmake
    + bin
-     + Makefile.am
+     + CMakeLists.txt
      + VERSION.in
      + runAppli.in
      + myrunSalome.py
    + idl
-     + Makefile.am
+     + CMakeLists.txt
      + PYHELLO_Gen.idl
    + src
-     + Makefile.am
+     + CMakeLists.txt
      + PYHELLO
-       + Makefile.am
+       + CMakeLists.txt
        + PYHELLO.py
        + PYHELLO_utils.py
      + PYHELLOGUI
-       + Makefile.am
+       + CMakeLists.txt
        + PYHELLOGUI.py
        + PYHELLO_msg_en.ts
+       + PYHELLO_msg_fr.ts
        + PYHELLO_icons.ts
    + resources
-     + Makefile.am
+     + CMakeLists.txt
      + PYHELLO.png
      + PYHELLO_small.png
      + ExecPYHELLO.png
@@ -92,8 +89,9 @@ The following file structure is typical for the SALOME module:
      + stop.png
      + PYHELLOCatalog.xml.in
      + SalomeApp.xml.in
+     + schema.xml
    + doc
-     + Makefile.am
+     + CMakeLists.txt
      + doxyfile.in
      + index.doc
 </pre>
@@ -117,19 +115,45 @@ Below is a short description of these files. Note, that files with .in
 suffix are the autoconf templates from which the actual files are
 generated during the build procedure.
 
-- build_configure, configure.ac, Makefile.am, make_common_starter.am
+- \c CMakeLists.txt
 
-These files are a part of the build system based on GNU
-automake/autoconf auto-tools. These files define the build procedure,
-namely, compilation and installation rules like compiler and linker
-options, installation destination folder, package version etc.
+These files are input text files that contain the project parameters 
+and describe the flow control of the build process in simple CMake language as 
+a part of the build system based on CMake. These files define 
+the build procedure, namely, compilation and installation rules such as compiler 
+and linker options, installation destination folder, package version etc.
 
-- adm_local/unix/config_files/check_PYHELLO.m4
+- \c adm_local
 
-The files in this directory are also a part of the GNU auto-tools
--based build procedure. The scripts written in m4 language are usually
-used to test an availability of some 3rd-party pre-requisite product,
-compiler feature, different configuration options. 
+This directory contains additional administrative files used by the
+build procedure.
+
+- \c adm_local/cmake_files/FindSalomePYHELLO.cmake
+ 
+Some modules can need some external packages in order to compile and 
+run properly. The usual approach is to write a special *.cmake file
+for the purpose of finding a certain piece of software and to set it's
+libraries, include files and definitions into appropriate variables so that
+they can be used in the build process of another project.
+It is possible to include the standard CMake detection modules (FindXyz.cmake files,
+located in the standard CMake installation directory) or, if CMake does not provide
+a search procedure for some required software, it is necessary to create *.cmake
+module for each pre-requisite.
+
+Also, it is good idea to create and distribute *.cmake file for the project being
+developed; it can be used then in the dependent projects. For example, PYHELLO module
+installs a file FindSalomePYHELLO.cmake that can be used for its detection.
+
+To search SALOME PYHELLO module in some other project it will be only needed to write
+the following code in CMakeLists.txt: 
+
+\code
+FIND_PACKAGE(SalomePYHELLO)
+\endcode
+
+- \c bin
+
+This directory usually contains different scripts.
 
 - bin/VERSION.in
 
@@ -145,10 +169,22 @@ These files are not essential but make the example easier to
 use. These are scripts that can be used to run SALOME session with
 PYHELLO module.
 
+- \c idl
+
+This directory contains IDL files that specify the CORBA services
+supplied by SALOME module.
+
 - idl/PYHELLO_Gen.idl
 
 This is the CORBA IDL definition of the services implemented by SALOME
 PYHELLO module.
+
+- \c src
+
+This is a root directory of the module source codes. Usually it contains
+one or more sub-directories that provide an implementation of module
+libraries, executables, Python API modules, etc. The hierarchy of the
+sources tree is arbitrary; it follows the specific module needs.
 
 - src/PYHELLO/PYHELLO.py
 - src/PYHELLO/PYHELLO_utils.py
@@ -171,14 +207,20 @@ access to the module functionality from the SALOME GUI session via
 menu actions, dialog boxes and so on.
 
 - src/PYHELLOGUI/PYHELLO_msg_en.ts
+- src/PYHELLOGUI/PYHELLO_msg_fr.ts
 - src/PYHELLOGUI/PYHELLO_icons.ts
 
 These files provide a description (internationalization) of GUI
-resources of the PYHELLO module. PYHELLO_msg_en.ts provides an English
-translation of the string resources used in a module. PYHELLO_icons.ts
+resources of the PYHELLO module. \c PYHELLO_msg_en.ts provides an English
+translation of the string resources used in a module. \c PYHELLO_icons.ts
 defines images and icons resources used within the GUI of the
 PYHELLO module. Please refer to Qt linguist documentation for more
 details.
+
+- \c resources
+
+This optional directory usually contains different resources files
+required for the correct operation of SALOME module.
 
 - resources/PYHELLO.png
 - resources/PYHELLO_small.png
@@ -211,22 +253,24 @@ should provide a section with the name corresponding to the name of a
 module ("PYHELLO" in this case) with the following parameters:
 \code
   <section name="PYHELLO">
-    <parameter name="name" value="PyHello"/>
-    <parameter name="icon" value="PYHELLO.png"/>
-    <parameter name="library" value="SalomePyQtGUI"/>
-    <parameter name="version" value="@SALOMEPYHELLO_VERSION@"/>
+    <parameter name="name"            value="PyHello"/>
+    <parameter name="icon"            value="PYHELLO.png"/>
+    <parameter name="library"         value="SalomePyQtGUI"/>
+    <parameter name="documentation"   value="pyhello_help"/>
+    <parameter name="version"         value="@SALOMEPYHELLO_VERSION@"/>
   </section>
 \endcode
 
-The "name" parameter defines GUI name of a module. The "icon"
-parameter defines a GUI icon of a module. The parameter "library"
+The \a "name" parameter defines GUI name of a module. The \a "icon"
+parameter defines a GUI icon of a module. The parameter \a "library"
 specifies the name of the C++ library representing the front-end of
 the module in the SALOME GUI desktop. The Python modules which do not
 implement its own C++ front-end GUI library should specify
-"SalomePyQtGUI" value in this parameter. The "version" parameter 
-defines the version of the module.
+"SalomePyQtGUI" value in this parameter. The \a "documentation" parameter
+provides a name for the help-related resource section (see below).
+The \a "version" parameter defines the version of the module.
 
-The section "resources" also specifies the directory that contains
+The section \a "resources" also specifies the directory that contains
 resources of a module (icons, translation files, etc).
 
 \code
@@ -235,7 +279,7 @@ resources of a module (icons, translation files, etc).
   </section>
 \endcode
 
-The section [module_name]_help provides information on the location of 
+The section \a "pyhello_help" provides information on the location of 
 the help page and the eventual sub-menu in the Help menu.
 
 \code
@@ -255,57 +299,68 @@ generation of module documentation.
 
 An input file for the Doxygen, which provides a source of this documentation.
 
+- \c doc/images
+
+This sub-folder contains images used in the documentation.
+
+- \c doc/static
+
+This sub-folder contains auxiliary files used when generating documentation
+by Doxygen, like header (\c header.html.in) and footer (\c footer.html)
+of the HTML pages, style sheet (\c doxygen.css) etc.
+
 \ref dev_steps "<< Previous"<br>\ref build_proc_files ">> Next"
 
 \page build_proc_files Build procedure input files
 
-SALOME uses autoconf and automake GNU auto-tools to build the
-modules. The configure script is used for the build procedure to test
-the system configuration and to pre-configure the module construction
-Makefile files. 
+In most cases SALOME uses \b CMake-based build system for modules.
+CMake is a cross-platform build system which works on Linux, Windows
+and other operating systems.
 
-The \b build_configure script provides a procedure that uses \b
-configure.ac and set of \b Makefile.am files as input and uses autoconf
-to generate the configure script and automake to generate Makefile.in
-files. 
+The \c CMakeLists.txt files are used to describe the build procedure,
+in particular:
+- Test platform;
+- Test system configuration;
+- Detect pre-requisites;
+- Generate build rules (for example, standard UNIX makefiles on Linux,
+  MSVC solutions, etc).
 
-The files with an .in extension are the skeletons that are the input
-of the configure script (to be more precise, these files should be
-listed in the end of the configure.ac file in the AC_OUTPUT()
-autoconf macro) and are transformed by the configure process.
+Project's root directory provides main CMake configuration that allows 
+build all targets into one set of binaries and libraries. Each sub-directory
+also includes CMake configuration file (CMakeLists.txt) that specifies
+targets being build.
 
-Almost all files used for this process are located in the platform
-base module KERNEL that is referenced by the KERNEL_ROOT_DIR
-environment variable, namely in its salome_adm sub-folder.
-Similarly, the GUI_ROOT_DIR environment variable is used for the
-graphical user interface (GUI), that also provides a set of
-configuration utilities (m4 files) in its adm_local folder. However,
-some files must be modified as a function of the target module. This
-is the case for build_configure and configure.ac files which usually
-need to be adapted to the module needs. 
+The file \c CMakeLists.txt in root directory of the PYHELLO module provides 
+basic build rules to be used in other \c CMakeLists.txt files. 
+It sets main properties of project: name, version, pre-requisites, 
+installation paths, programming languages being used by the project,
+tree of sub-directories, etc.
 
-The file \b make_common_starter.am file in the adm_local directory of
-the example module provides basic build rules to be used in other
-Makefile.am files. To refer to this file in the Makefile.am it is
-necessary to use "include" clause:
+A lot of files used by the build procedure of HELLO module are located
+in SALOME KERNEL module (that is referenced by the \c KERNEL_ROOT_DIR
+environment variable), namely in its \c salome_adm sub-folder.
+Similarly, the \c GUI_ROOT_DIR environment variable is used for the
+graphical user interface (GUI) module of SALOME; this module also
+provides a set of configuration utilities (\c *.cmake files) in its 
+\c adm_local folder.
 
-\code
-include $(top_srcdir)/adm_local/unix/make_common_starter.am
-\endcode
-
-The adm_local/unix/config_files is a directory in which the m4 files
-that are used to test the configuration of the system in the configure
-process can be placed. If the salome_adm files are not sufficient,
-additional configuration files can be put to the adm_local directory.
+The files with an \c .in extension are the skeletons which are processed
+by CMake to transform it to the resulting files in the build directory during
+the configuration process.
 
 \ref tree_structure "<< Previous"<br>\ref idl_dir ">> Next"
 
 \page idl_dir The idl directory
 
-The idl directory requires a Makefile.am that must make the
-compilation of the idl PYHELLO_Gen.idl file and install all the
-generated files into the correct module installation directories.  The
-BASEIDL_FILES target has to be modified to reach this goal.
+The \c idl directory requires a \c CMakeLists.txt that must make the
+compilation of the CORBA IDL \c PYHELLO_Gen.idl file and install all the
+generated files into the correct module installation directories.
+This is done by using \c OMNIORB_ADD_MODULE() CMake macro:
+
+\code
+OMNIORB_ADD_MODULE(SalomeIDLPYHELLO PYHELLO_Gen.idl ${KERNEL_ROOT_DIR}/idl/salome ${KERNEL_SalomeIDLKernel})
+INSTALL(TARGETS SalomeIDLPYHELLO EXPORT ${PROJECT_NAME}TargetGroup DESTINATION ${SALOME_INSTALL_LIBS})
+\endcode
 
 The idl file itself must define a CORBA module for which the name must
 be different from the module name to avoid name conflicts and define a
@@ -321,26 +376,26 @@ The src contains all source files required to build and install CORBA
 engine and (optionally) GUI of the module. Each of these entities usually
 has (but this is not actually obligatory) its own directory.
 
-The Makefile.am simply triggers the path of sub-directories described
-by the SUBDIRS target.
+The \c CMakeLists.txt file triggers the path of sub-directories described
+by the \a ADD_SUBDIRECTORY() command.
 
 - The src/PYHELLO directory
 
 This directory contains the Python files that implement the engine
-of the module. The Makefile.am defines the rules used to install these
+of the module. The \c CMakeLists.txt defines the rules used to install these
 files to the destination folder. The name of the module
 engine Python file is predefined and should be set as <MODULE>.py
 where <MODULE> is a name of the module. In the case of the PYHELLO
 module, the name of the engine Python script should be PYHELLO.so.
 
-The PYHELLO.py Python script implements PYHELLO class that is derived
+The \c PYHELLO.py Python script implements PYHELLO class that is derived
 from the PYHELLO_Gen interface of the PYHELLO_ORB__POA CORBA module,
 the SALOME_ComponentPy_i class (base implementation of SALOME
 Python module engine exported by the KERNEL module) and
 SALOME_DriverPy_i class that provides base implementation of
 persistence mechanism.
 
-In particular, PYHELLO class implements makeBanner() function that is
+In particular, \a PYHELLO class implements makeBanner() function that is
 defined in the IDL interface PYHELLO_ORB::PYHELLO_Gen. 
 
 \code
@@ -525,22 +580,27 @@ perform several steps:
 [bash% ] source env_products.sh
 [bash% ] mkdir PYHELLO_BUILD
 [bash% ] cd PYHELLO_BUILD
-[bash% ] ../PYHELLO1_SRC/build_configure
-[bash% ] ../PYHELLO1_SRC/configure --prefix=<PYHELLO_module_installation_dir>
+[bash% ] cmake -DCMAKE_BUILD_TYPE=<Mode> -DCMAKE_INSTALL_PREFIX=<PYHELLO_module_installation_dir> ../PYHELLO1_SRC
 [bash% ] make
 [bash% ] make install
 </pre>
 
-The first command creates a build directory for the PYHELLO module. Then
-next step is to cd to this build directory. From this directory you
-sequentially invoke build_configure, configure, make and make install
-commands. On each step, you have to ensure that the operation is
-finished correctly (no errors raised).
+The first command sets environment for building project.
 
-The <PYHELLO_module_installation_dir> variable above defines the
-destination directory to which the PYHELLO module should be
-installed. After the last step is finished, the PYHELLO module is built
-and installed to the <PYHELLO_module_installation_dir> directory.
+Second command creates a build directory for the PYHELLO module. Then
+next step is to cd to this build directory. From this directory you 
+invoke cmake command, where <Mode> is build mode (Release or Debug),
+<PYHELLO_module_installation_dir> is a destination folder to install PYHELLO module of SALOME.
+By default (if CMAKE_INSTALL_PREFIX option is not given), PYHELLO module will be 
+configured for installation to the /usr directory that requires root permissions 
+to complete the installation. 
+
+Next steps - build the package (\c make) and install it (\c make install). 
+
+On each step, you have to ensure that the operation is finished correctly 
+(no errors raised). After the last step is finished, the PYHELLO module is built
+and installed to the \c \<PYHELLO_module_installation_dir\> directory.
+
 
 \ref doc_dir "<< Previous"<br>\ref run_procedure ">> Next"
 
