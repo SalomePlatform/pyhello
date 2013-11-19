@@ -112,7 +112,7 @@ to copy files from another module such as GEOM or MED.
 The module name is PYHELLO, the component name is PYHELLO and all the
 files are put in a directory named PYHELLO1_SRC.
 Below is a short description of these files. Note, that files with .in
-suffix are the autoconf templates from which the actual files are
+suffix are the cmake templates from which the actual files are
 generated during the build procedure.
 
 - \c CMakeLists.txt
