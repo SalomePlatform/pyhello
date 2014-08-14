@@ -84,9 +84,8 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     """
     Dump module data to the Python script.
     """
-    def DumpPython( self, study, isPublished ):
+    def DumpPython( self, study, isPublished, isMultiFile ):
         abuffer = []
-        abuffer.append( "def RebuildData( theStudy ):" )
         names = []
         father = study.FindComponent( moduleName() )
         if father:
@@ -98,16 +97,19 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
                 pass
             pass
         if names:
-            abuffer += [ "  from batchmode_salome import lcc" ]
-            abuffer += [ "  import PYHELLO_ORB" ]
-            abuffer += [ "  " ]
-            abuffer += [ "  pyhello = lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
-            abuffer += [ "  " ]
-            abuffer += [ "  pyhello.createObject( theStudy, '%s' )" % name for name in names ]
+            abuffer += [ "from salome import lcc" ]
+            abuffer += [ "import PYHELLO_ORB" ]
+            abuffer += [ "" ]
+            abuffer += [ "pyhello = lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
+            abuffer += [ "" ]
+            abuffer += [ "pyhello.createObject( theStudy, '%s' )" % name for name in names ]
+            abuffer += [ "" ]
             pass
-        abuffer += [ "  " ]
-        abuffer.append( "  pass" )
-        abuffer.append( "\0" )
+        if isMultiFile:
+            abuffer       = [ "  " + s for s in abuffer ]
+            abuffer[0:0]  = [ "def RebuildData( theStudy ):" ]
+            abuffer      += [ "  pass" ]
+        abuffer += [ "\0" ]
         return ("\n".join( abuffer ), 1)
 
     """
