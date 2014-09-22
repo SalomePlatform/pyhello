@@ -40,7 +40,10 @@ module PYHELLO_ORB
       raises (SALOME::SALOME_Exception);
     
     void createObject(in SALOMEDS::Study theStudy,
-		      in string name)
+                      in string name)
+      raises (SALOME::SALOME_Exception);
+    
+    void raiseAnException()
       raises (SALOME::SALOME_Exception);
   };
 };

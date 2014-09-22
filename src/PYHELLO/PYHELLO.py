@@ -68,6 +68,14 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
         return banner
 
     """
+    Intentionnally raises an exception for test purposes.
+    """
+    def raiseAnException( self ):
+        import SALOME
+        exData = SALOME.ExceptionStruct( SALOME.BAD_PARAM, "Test exception in raiseAnException()",'',0)
+        raise SALOME.SALOME_Exception( exData )
+      
+    """
     Create object.
     """
     def createObject( self, study, name ):
