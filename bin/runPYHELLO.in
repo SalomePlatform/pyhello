@@ -62,6 +62,6 @@ searchFreePort() {
 searchFreePort
 
 
-${KERNEL_ROOT_DIR}/bin/salome/envSalome.py python -i $PYHELLO_ROOT_DIR/bin/salome/myrunSalome.py --modules=PYHELLO --killall
+${KERNEL_ROOT_DIR}/bin/salome/envSalome.py python -i $PYHELLO_ROOT_DIR/bin/salome/runPYHELLO.py --modules=PYHELLO --killall
 
 

@@ -63,8 +63,8 @@ The following file structure is typical for the SALOME module:
    + bin
      + CMakeLists.txt
      + VERSION.in
-     + runAppli.in
-     + myrunSalome.py
+     + runPYHELLO.in
+     + runPYHELLO.py
    + idl
      + CMakeLists.txt
      + PYHELLO_Gen.idl
@@ -162,8 +162,8 @@ least) and (optionally) compatibilities or incompatibilities with
 other modules. This file is strongly recommended but is not essential
 for operation of the module.
 
-- bin/runAppli.in
-- bin/myrunSalome.py
+- bin/runPYHELLO.in
+- bin/runPYHELLO.py
 
 These files are not essential but make the example easier to
 use. These are scripts that can be used to run SALOME session with
@@ -529,11 +529,11 @@ version and (optionally) its compatibilities or incompatibilities with
 other modules. Therefore, it is strongly recommended but is not
 essential for correct operation of the module.
 
-The runAppli.in file is the equivalent of the runSalome script
+The runPYHELLO.in file is the equivalent of the runSalome script
 distributed by the KERNEL module but configured to start SALOME
 session with PYHELLO module only.
 
-The myrunSalome.py file reuses part of functionality provided by the
+The runPYHELLO.py file reuses part of functionality provided by the
 KERNEL's runSalome.py script. It is used to run SALOME session and
 start PYHELLO module in this session. 
 
@@ -609,7 +609,7 @@ and installed to the \c \<PYHELLO_module_installation_dir\> directory.
 Go to the the <PYHELLO_module_installation_dir> directory and type:
 
 <pre>
-[bash% ] ./bin/salome/runAppli
+[bash% ] ./bin/salome/runPYHELLO
 </pre>
 
 This command runs SALOME session configured for KERNEL and the PYHELLO
@@ -617,14 +617,14 @@ module. At the end of running, the user will be prompted by the
 Python interpreter command line configured for SALOME that provides
 access to SALOME Python API (including CORBA interfaces).
 
-The runAppli file is a shell script that executes a Python commands
+The runPYHELLO file is a shell script that executes a Python commands
 running SALOME session by passing arguments to it in a command line:
 	
 <pre>
-${KERNEL_ROOT_DIR}/bin/salome/envSalome.py python -i $PYHELLO_ROOT_DIR/bin/salome/myrunSalome.py --modules=PYHELLO --killall
+${KERNEL_ROOT_DIR}/bin/salome/envSalome.py python -i $PYHELLO_ROOT_DIR/bin/salome/runPYHELLO.py --modules=PYHELLO --killall
 </pre>
 
-These arguments state that the myrunSalome.py script located in the
+These arguments state that the runPYHELLO.py script located in the
 PYHELLO module will be used, that the PYHELLO component will be
 activated and all previously running SALOME sessions should be
 shutdowned.
@@ -649,7 +649,7 @@ immediately afterwards will be successful.
 
 The PYHELLO_ORB module has to be imported before making a request to
 load the component into the container, to obtain access to methods of
-the component.  This container is made accessible in the myrunSalome.py
+the component.  This container is made accessible in the runPYHELLO.py
 by means of the \b container variable:
 
 <pre>
@@ -691,7 +691,7 @@ automatically generate XML description file from the IDL file.
 The method of loading the component is not very different from that
 is described above. The services of the LifeCycle module are used in
 this case instead of calling the container directly. The call sequence
-is contained in the myrunSalome.py \b test() function.
+is contained in the runPYHELLO.py \b test() function.
 
 <pre>
     c=test(clt)
