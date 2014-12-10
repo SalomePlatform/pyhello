@@ -37,6 +37,7 @@ SET(_bin_SCRIPTS
 SET(_ts_RESOURCES
   PYHELLO_msg_en.ts
   PYHELLO_msg_fr.ts
+  PYHELLO_msg_ja.ts
   PYHELLO_icons.ts
 )
 
