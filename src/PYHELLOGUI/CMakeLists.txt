@@ -17,7 +17,7 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-INCLUDE(UseQt4Ext)
+INCLUDE(UseQtExt)
 
 # additional include directories
 INCLUDE_DIRECTORIES(
@@ -44,4 +44,4 @@ SET(_ts_RESOURCES
 # --- rules ---
 
 SALOME_INSTALL_SCRIPTS("${_bin_SCRIPTS}" ${SALOME_INSTALL_SCRIPT_PYTHON})
-QT4_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_PYHELLO_INSTALL_RES_DATA}")
+QT_INSTALL_TS_RESOURCES("${_ts_RESOURCES}" "${SALOME_PYHELLO_INSTALL_RES_DATA}")
