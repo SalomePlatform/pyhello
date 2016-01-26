@@ -27,8 +27,7 @@
 #
 import traceback
 import os
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from qtsalome import *
 
 from PYHELLO_utils import *
 
@@ -398,7 +397,7 @@ class MyDialog( QDialog ):
         self.setModal( modal )
         self.setWindowTitle( "HELLO!" )
         vb = QVBoxLayout( self )
-        vb.setMargin( 8 )
+        vb.setContentsMargins( 8, 8, 8, 8 )
 
         hb0 = QHBoxLayout( self )
         label = QLabel( "Prenom: ", self )
@@ -411,16 +410,15 @@ class MyDialog( QDialog ):
         hb1 = QHBoxLayout( self )
         bOk = QPushButton( "&OK", self )
         bOk.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_HANDSHAKE' ) )
-        self.connect( bOk, SIGNAL( 'clicked()' ), self, SLOT( 'accept()' ) )
+        Connect( bOk, 'clicked()', self, 'accept()')
         hb1.addWidget( bOk )
         
         hb1.addStretch( 10 )
         
         bCancel = QPushButton( "&Cancel", self )
         bCancel.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_STOP' ) )
-        self.connect( bCancel, SIGNAL( 'clicked()' ), self, SLOT( 'close()' ) )
+        Connect( bCancel, 'clicked()', self, 'close()' )
         hb1.addWidget( bCancel )
-        
         vb.addLayout( hb1 )
         pass
     
@@ -450,7 +448,7 @@ def ShowHELLO():
 ###
 def CreateObject():
     global __objectid__
-    default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ).trimmed() )
+    default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ) ).strip()
     try:
         if sgPyQt.action( GUIcontext.OPTION_3_ID ).isChecked():
             # request object name from the user
@@ -460,7 +458,7 @@ def CreateObject():
                                              QLineEdit.Normal,
                                              default_name )
             if not ok: return
-            name = str( name.trimmed() )
+            name = str( name ).strip()
         elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isChecked():
             # generate object name
             __objectid__  = __objectid__ + 1
@@ -548,7 +546,7 @@ def Rename():
                                              "Enter object name:",
                                              QLineEdit.Normal,
                                              sobj.GetName() )
-            name = str( name.trimmed() )
+            name = str( name ).strip()
             if not ok or not name: return
             attr = builder.FindOrCreateAttribute( sobj, "AttributeName" )
             attr.SetValue( name )
@@ -561,7 +559,7 @@ def Rename():
 # Display password stored in the preferences
 ###
 def Password():
-  passwd = str( sgPyQt.stringSetting( "PYHELLO", "Password", GUIcontext.DEFAULT_PASSWD ).trimmed() )
+  passwd = str( sgPyQt.stringSetting( "PYHELLO", "Password", GUIcontext.DEFAULT_PASSWD ) ).strip()
   QMessageBox.information(sgPyQt.getDesktop(),
                           "Password",
                           passwd)
