@@ -410,14 +410,14 @@ class MyDialog( QDialog ):
         hb1 = QHBoxLayout( self )
         bOk = QPushButton( "&OK", self )
         bOk.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_HANDSHAKE' ) )
-        Connect( bOk, 'clicked()', self, 'accept()')
+        bOk.clicked.connect(self.accept)
         hb1.addWidget( bOk )
         
         hb1.addStretch( 10 )
         
         bCancel = QPushButton( "&Cancel", self )
         bCancel.setIcon( sgPyQt.loadIcon( 'PYHELLO', 'ICO_STOP' ) )
-        Connect( bCancel, 'clicked()', self, 'close()' )
+        bCancel.clicked.connect(self.close)
         hb1.addWidget( bCancel )
         vb.addLayout( hb1 )
         pass
