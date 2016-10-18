@@ -480,7 +480,7 @@ def initialize():
 
 \code
 def createPreferences():
-    if verbose() : print "PYHELLOGUI.createPreferences() : study : %d" % _getStudyId()
+    if verbose() : print "PYHELLOGUI.createPreferences()"
     gid = sgPyQt.addPreference( "General" )
     gid = sgPyQt.addPreference( "Object creation", gid )
     pid = sgPyQt.addPreference( "Default name",  gid, SalomePyQt.PT_String,   "PYHELLO", "def_obj_name" )
@@ -502,7 +502,7 @@ def createPreferences():
 
 \code
 def windows():
-    if verbose() : print "PYHELLOGUI.windows() : study : %d" % _getStudyId()
+    if verbose() : print "PYHELLOGUI.windows()"
     wm = {}
     wm[SalomePyQt.WT_ObjectBrowser] = Qt.LeftDockWidgetArea
     wm[SalomePyQt.WT_PyConsole]     = Qt.BottomDockWidgetArea

@@ -32,7 +32,7 @@ __all__ = [
     "getORB",
     "getNS",
     "getLCC",
-    "getStudyManager",
+    "getStudy",
     "getEngine",
     "getEngineIOR",
     "findOrCreateComponent",
@@ -129,16 +129,16 @@ def getLCC():
     return __lcc__
 
 ##
-# Get study manager
+# Get study
 ###
-__study_manager__ = None
-def getStudyManager():
-    global __study_manager__
-    if __study_manager__ is None:
-        obj = getNS().Resolve( '/myStudyManager' )
-        __study_manager__ = obj._narrow( SALOMEDS.StudyManager )
+__study__ = None
+def getStudy():
+    global __study__
+    if __study__ is None:
+        obj = getNS().Resolve( '/Study' )
+        __study__ = obj._narrow( SALOMEDS.Study )
         pass
-    return __study_manager__
+    return __study__
 
 ###
 # Get PYHELLO engine

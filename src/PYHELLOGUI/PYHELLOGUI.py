@@ -107,10 +107,6 @@ class GUIcontext:
 # Global variables
 ################################################
 
-# study-to-context map
-__study2context__   = {}
-# current context
-__current_context__ = None
 # object counter
 __objectid__ = 0
 
@@ -131,25 +127,11 @@ sg = libSALOME_Swig.SALOMEGUI_Swig()
 ################################################
 
 ###
-# get active study ID
-###
-def _getStudyId():
-    return sgPyQt.getStudyId()
-
-###
-# get active study
-###
-def _getStudy():
-    studyId = _getStudyId()
-    study = getStudyManager().GetStudyByID( studyId )
-    return study
-
-###
 # returns True if object has children
 ###
 def _hasChildren( sobj ):
     if sobj:
-        study = _getStudy()
+        study = getStudy()
         iter  = study.NewChildIterator( sobj )
         while iter.More():
             name = iter.Value().GetName()
@@ -159,25 +141,6 @@ def _hasChildren( sobj ):
             pass
         pass
     return False
-
-###
-# get current GUI context
-###
-def _getContext():
-    global __current_context__
-    return __current_context__
-
-###
-# set and return current GUI context
-# study ID is passed as parameter
-###
-def _setContext( studyID ):
-    global __study2context__, __current_context__
-    if not __study2context__.has_key(studyID):
-        __study2context__[studyID] = GUIcontext()
-        pass
-    __current_context__ = __study2context__[studyID]
-    return __current_context__
 
 ###
 # increment object counter in the map
@@ -205,7 +168,7 @@ def _getSelection():
 # called when module is initialized
 # perform initialization actions
 def initialize():
-    if verbose() : print "PYHELLOGUI.initialize() : study : %d" % _getStudyId()
+    if verbose() : print "PYHELLOGUI.initialize()"
     # set default preferences values
     if not sgPyQt.hasSetting( "PYHELLO", "def_obj_name"):
         sgPyQt.addSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME )
@@ -218,7 +181,7 @@ def initialize():
 # called when module is initialized
 # return map of popup windows to be used by the module
 def windows():
-    if verbose() : print "PYHELLOGUI.windows() : study : %d" % _getStudyId()
+    if verbose() : print "PYHELLOGUI.windows()"
     wm = {}
     wm[SalomePyQt.WT_ObjectBrowser] = Qt.LeftDockWidgetArea
     wm[SalomePyQt.WT_PyConsole]     = Qt.BottomDockWidgetArea
@@ -227,13 +190,13 @@ def windows():
 # called when module is initialized
 # return list of 2d/3d views to be used ny the module
 def views():
-    if verbose() : print "PYHELLOGUI.views() : study : %d" % _getStudyId()
+    if verbose() : print "PYHELLOGUI.views()"
     return []
 
 # called when module is initialized
 # export module's preferences
 def createPreferences():
-    if verbose() : print "PYHELLOGUI.createPreferences() : study : %d" % _getStudyId()
+    if verbose() : print "PYHELLOGUI.createPreferences()"
     gid = sgPyQt.addPreference( "General" )
     gid = sgPyQt.addPreference( "Object creation", gid )
     pid = sgPyQt.addPreference( "Default name",  gid, SalomePyQt.PT_String,   "PYHELLO", "def_obj_name" )
@@ -255,28 +218,20 @@ def createPreferences():
 # called when module is activated
 # returns True if activating is successfull and False otherwise
 def activate():
-    if verbose() : print "PYHELLOGUI.activate() : study : %d" % _getStudyId()
-    ctx = _setContext( _getStudyId() )
+    if verbose() : print "PYHELLOGUI.activate()"
+    GUIcontext()
     return True
 
 # called when module is deactivated
 def deactivate():
-    if verbose() : print "PYHELLOGUI.deactivate() : study : %d" % _getStudyId()
-    pass
-
-# called when active study is changed
-# active study ID is passed as parameter
-def activeStudyChanged( studyID ):
-    if verbose() : print "PYHELLOGUI.activeStudyChanged(): study : %d" % studyID
-    ctx = _setContext( _getStudyId() )
+    if verbose() : print "PYHELLOGUI.deactivate()"
     pass
 
 # called when popup menu is invoked
 # popup menu and menu context are passed as parameters
 def createPopupMenu( popup, context ):
     if verbose() : print "PYHELLOGUI.createPopupMenu(): context = %s" % context
-    ctx = _setContext( _getStudyId() )
-    study = _getStudy()
+    study = getStudy()
     selcount, selected = _getSelection()
     if verbose() : print selcount, selected
     if selcount == 1:
@@ -473,7 +428,7 @@ def CreateObject():
         name = "%s %d" % ( default_name, __objectid__ )
         pass
     if not name: return
-    getEngine().createObject( _getStudy(), name )
+    getEngine().createObject( getStudy(), name )
     sg.updateObjBrowser( True )
     pass
 
@@ -481,7 +436,7 @@ def CreateObject():
 # Delete all objects
 ###
 def DeleteAll():
-    study = _getStudy()
+    study = getStudy()
     father = study.FindComponent( moduleName() )
     if father:
         iter = study.NewChildIterator( father )
@@ -499,7 +454,7 @@ def DeleteAll():
 # Show object's name
 ###
 def ShowMe():
-    study = _getStudy()
+    study = getStudy()
     entry = sg.getSelected( 0 )
     if entry != '':
         sobj = study.FindObjectID( entry )
@@ -516,7 +471,7 @@ def ShowMe():
 # Delete selected object(s)
 ###
 def Delete():
-    study = _getStudy()
+    study = getStudy()
     builder = study.NewBuilder()
     if sg.SelectedCount() <= 0: return
     for i in range( sg.SelectedCount() ):
@@ -535,7 +490,7 @@ def Delete():
 # Rename selected object
 ###
 def Rename():
-    study = _getStudy()
+    study = getStudy()
     builder = study.NewBuilder()
     entry = sg.getSelected( 0 )
     if entry != '':
