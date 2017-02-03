@@ -131,8 +131,7 @@ sg = libSALOME_Swig.SALOMEGUI_Swig()
 ###
 def _hasChildren( sobj ):
     if sobj:
-        study = getStudy()
-        iter  = study.NewChildIterator( sobj )
+        iter  = salome.myStudy.NewChildIterator( sobj )
         while iter.More():
             name = iter.Value().GetName()
             if name:
@@ -157,7 +156,7 @@ def _getSelection():
     selcount = sg.SelectedCount()
     seltypes = {}
     for i in range( selcount ):
-        _incObjToMap( seltypes, getObjectID( _getStudy(), sg.getSelected( i ) ) )
+        _incObjToMap( seltypes, getObjectID( sg.getSelected( i ) ) )
         pass
     return selcount, seltypes
 
@@ -231,7 +230,6 @@ def deactivate():
 # popup menu and menu context are passed as parameters
 def createPopupMenu( popup, context ):
     if verbose() : print "PYHELLOGUI.createPopupMenu(): context = %s" % context
-    study = getStudy()
     selcount, selected = _getSelection()
     if verbose() : print selcount, selected
     if selcount == 1:
@@ -428,25 +426,24 @@ def CreateObject():
         name = "%s %d" % ( default_name, __objectid__ )
         pass
     if not name: return
-    getEngine().createObject( getStudy(), name )
-    sg.updateObjBrowser( True )
+    getEngine().createObject( name )
+    sg.updateObjBrowser()
     pass
 
 ###
 # Delete all objects
 ###
 def DeleteAll():
-    study = getStudy()
-    father = study.FindComponent( moduleName() )
+    father = salome.myStudy.FindComponent( moduleName() )
     if father:
-        iter = study.NewChildIterator( father )
-        builder = study.NewBuilder()
+        iter = salome.myStudy.NewChildIterator( father )
+        builder = salome.myStudy.NewBuilder()
         while iter.More():
             sobj = iter.Value()
             iter.Next()
             builder.RemoveObjectWithChildren( sobj )
             pass
-        sg.updateObjBrowser( True )
+        sg.updateObjBrowser()
         pass
     pass
 
@@ -454,10 +451,9 @@ def DeleteAll():
 # Show object's name
 ###
 def ShowMe():
-    study = getStudy()
     entry = sg.getSelected( 0 )
     if entry != '':
-        sobj = study.FindObjectID( entry )
+        sobj = salome.myStudy.FindObjectID( entry )
         if ( sobj ):
             test, attr = sobj.FindAttribute( "AttributeName" )
             if test:
@@ -471,30 +467,28 @@ def ShowMe():
 # Delete selected object(s)
 ###
 def Delete():
-    study = getStudy()
-    builder = study.NewBuilder()
+    builder = salome.myStudy.NewBuilder()
     if sg.SelectedCount() <= 0: return
     for i in range( sg.SelectedCount() ):
         entry = sg.getSelected( i )
         if entry != '':
-            sobj = study.FindObjectID( entry )
+            sobj = salome.myStudy.FindObjectID( entry )
             if ( sobj ):
                 builder.RemoveObject( sobj )
                 pass
             pass
         pass
-    sg.updateObjBrowser( True )
+    sg.updateObjBrowser()
     pass
 
 ###
 # Rename selected object
 ###
 def Rename():
-    study = getStudy()
-    builder = study.NewBuilder()
+    builder = salome.myStudy.NewBuilder()
     entry = sg.getSelected( 0 )
     if entry != '':
-        sobj = study.FindObjectID( entry )
+        sobj = salome.myStudy.FindObjectID( entry )
         if ( sobj ):
             name, ok = QInputDialog.getText( sgPyQt.getDesktop(),
                                              "Object name",
@@ -505,7 +499,7 @@ def Rename():
             if not ok or not name: return
             attr = builder.FindOrCreateAttribute( sobj, "AttributeName" )
             attr.SetValue( name )
-            sg.updateObjBrowser( True )
+            sg.updateObjBrowser()
             pass
         pass
     pass

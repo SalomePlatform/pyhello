@@ -32,7 +32,6 @@ __all__ = [
     "getORB",
     "getNS",
     "getLCC",
-    "getStudy",
     "getEngine",
     "getEngineIOR",
     "findOrCreateComponent",
@@ -128,18 +127,6 @@ def getLCC():
         pass
     return __lcc__
 
-##
-# Get study
-###
-__study__ = None
-def getStudy():
-    global __study__
-    if __study__ is None:
-        obj = getNS().Resolve( '/Study' )
-        __study__ = obj._narrow( SALOMEDS.Study )
-        pass
-    return __study__
-
 ###
 # Get PYHELLO engine
 ###
@@ -164,10 +151,10 @@ def getEngineIOR():
 ###
 # Find or create PYHELLO component object in a study
 ###
-def findOrCreateComponent( study ):
-    father = study.FindComponent( moduleName() )
+def findOrCreateComponent():
+    father = salome.myStudy.FindComponent( moduleName() )
     if father is None:
-        builder = study.NewBuilder()
+        builder = salome.myStudy.NewBuilder()
         father = builder.NewComponent( moduleName() )
         attr = builder.FindOrCreateAttribute( father, "AttributeName" )
         attr.SetValue( moduleName() )
@@ -186,10 +173,10 @@ def findOrCreateComponent( study ):
 ###
 # Get object's ID
 ###
-def getObjectID( study, entry ):
+def getObjectID( entry ):
     ID = unknownID()
-    if study and entry:
-        sobj = study.FindObjectID( entry )
+    if entry:
+        sobj = salome.myStudy.FindObjectID( entry )
         if sobj is not None:
             test, anAttr = sobj.FindAttribute( "AttributeLocalID" )
             if test: ID = anAttr._narrow( SALOMEDS.AttributeLocalID ).Value()

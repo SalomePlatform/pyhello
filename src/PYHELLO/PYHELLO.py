@@ -77,9 +77,9 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     """
     Create object.
     """
-    def createObject( self, study, name ):
-        builder = study.NewBuilder()
-        father  = findOrCreateComponent( study )
+    def createObject( self, name ):
+        builder = salome.myStudy.NewBuilder()
+        father  = findOrCreateComponent()
         object  = builder.NewObject( father )
         attr    = builder.FindOrCreateAttribute( object, "AttributeName" )
         attr.SetValue( name )
@@ -93,10 +93,9 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     def DumpPython( self, isPublished, isMultiFile ):
         abuffer = []
         names = []
-        study = self._naming_service.Resolve("/Study")
-        father = study.FindComponent( moduleName() )
+        father = salome.myStudy.FindComponent( moduleName() )
         if father:
-            iter = study.NewChildIterator( father )
+            iter = salome.myStudy.NewChildIterator( father )
             while iter.More():
                 name = iter.Value().GetName()
                 if name: names.append( name )
@@ -109,7 +108,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
             abuffer += [ "" ]
             abuffer += [ "pyhello = salome.lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
             abuffer += [ "" ]
-            abuffer += [ "pyhello.createObject( salome.myStudy, '%s' )" % name for name in names ]
+            abuffer += [ "pyhello.createObject( '%s' )" % name for name in names ]
             abuffer += [ "" ]
             pass
         if isMultiFile:

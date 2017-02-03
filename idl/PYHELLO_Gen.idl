@@ -39,8 +39,7 @@ module PYHELLO_ORB
     string makeBanner(in string name)
       raises (SALOME::SALOME_Exception);
     
-    void createObject(in SALOMEDS::Study theStudy,
-                      in string name)
+    void createObject(in string name)
       raises (SALOME::SALOME_Exception);
     
     void raiseAnException()
