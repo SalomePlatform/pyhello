@@ -173,7 +173,7 @@ def _getContext():
 ###
 def _setContext( studyID ):
     global __study2context__, __current_context__
-    if not __study2context__.has_key(studyID):
+    if studyID not in __study2context__:
         __study2context__[studyID] = GUIcontext()
         pass
     __current_context__ = __study2context__[studyID]
@@ -205,7 +205,7 @@ def _getSelection():
 # called when module is initialized
 # perform initialization actions
 def initialize():
-    if verbose() : print "PYHELLOGUI.initialize() : study : %d" % _getStudyId()
+    if verbose() : print("PYHELLOGUI.initialize() : study : %d" % _getStudyId())
     # set default preferences values
     if not sgPyQt.hasSetting( "PYHELLO", "def_obj_name"):
         sgPyQt.addSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME )
@@ -218,7 +218,7 @@ def initialize():
 # called when module is initialized
 # return map of popup windows to be used by the module
 def windows():
-    if verbose() : print "PYHELLOGUI.windows() : study : %d" % _getStudyId()
+    if verbose() : print("PYHELLOGUI.windows() : study : %d" % _getStudyId())
     wm = {}
     wm[SalomePyQt.WT_ObjectBrowser] = Qt.LeftDockWidgetArea
     wm[SalomePyQt.WT_PyConsole]     = Qt.BottomDockWidgetArea
@@ -227,13 +227,13 @@ def windows():
 # called when module is initialized
 # return list of 2d/3d views to be used ny the module
 def views():
-    if verbose() : print "PYHELLOGUI.views() : study : %d" % _getStudyId()
+    if verbose() : print("PYHELLOGUI.views() : study : %d" % _getStudyId())
     return []
 
 # called when module is initialized
 # export module's preferences
 def createPreferences():
-    if verbose() : print "PYHELLOGUI.createPreferences() : study : %d" % _getStudyId()
+    if verbose() : print("PYHELLOGUI.createPreferences() : study : %d" % _getStudyId())
     gid = sgPyQt.addPreference( "General" )
     gid = sgPyQt.addPreference( "Object creation", gid )
     pid = sgPyQt.addPreference( "Default name",  gid, SalomePyQt.PT_String,   "PYHELLO", "def_obj_name" )
@@ -255,30 +255,30 @@ def createPreferences():
 # called when module is activated
 # returns True if activating is successfull and False otherwise
 def activate():
-    if verbose() : print "PYHELLOGUI.activate() : study : %d" % _getStudyId()
+    if verbose() : print("PYHELLOGUI.activate() : study : %d" % _getStudyId())
     ctx = _setContext( _getStudyId() )
     return True
 
 # called when module is deactivated
 def deactivate():
-    if verbose() : print "PYHELLOGUI.deactivate() : study : %d" % _getStudyId()
+    if verbose() : print("PYHELLOGUI.deactivate() : study : %d" % _getStudyId())
     pass
 
 # called when active study is changed
 # active study ID is passed as parameter
 def activeStudyChanged( studyID ):
-    if verbose() : print "PYHELLOGUI.activeStudyChanged(): study : %d" % studyID
+    if verbose() : print("PYHELLOGUI.activeStudyChanged(): study : %d" % studyID)
     ctx = _setContext( _getStudyId() )
     pass
 
 # called when popup menu is invoked
 # popup menu and menu context are passed as parameters
 def createPopupMenu( popup, context ):
-    if verbose() : print "PYHELLOGUI.createPopupMenu(): context = %s" % context
+    if verbose() : print("PYHELLOGUI.createPopupMenu(): context = %s" % context)
     ctx = _setContext( _getStudyId() )
     study = _getStudy()
     selcount, selected = _getSelection()
-    if verbose() : print selcount, selected
+    if verbose() : print(selcount, selected)
     if selcount == 1:
         # one object is selected
         if moduleID() in selected:
@@ -309,57 +309,57 @@ def createPopupMenu( popup, context ):
 # called when GUI action is activated
 # action ID is passed as parameter
 def OnGUIEvent( commandID ):
-    if verbose() : print "PYHELLOGUI.OnGUIEvent(): command = %d" % commandID
-    if dict_command.has_key( commandID ):
+    if verbose() : print("PYHELLOGUI.OnGUIEvent(): command = %d" % commandID)
+    if commandID in dict_command:
         try:
             dict_command[commandID]()
         except:
             traceback.print_exc()
     else:
-        if verbose() : print "The command is not implemented: %d" % commandID
+        if verbose() : print("The command is not implemented: %d" % commandID)
     pass
 
 # called when module's preferences are changed
 # preference's resources section and setting name are passed as parameters
 def preferenceChanged( section, setting ):
-    if verbose() : print "PYHELLOGUI.preferenceChanged(): %s / %s" % ( section, setting )
+    if verbose() : print("PYHELLOGUI.preferenceChanged(): %s / %s" % ( section, setting ))
     pass
 
 # called when active view is changed
 # view ID is passed as parameter
 def activeViewChanged( viewID ):
-    if verbose() : print "PYHELLOGUI.activeViewChanged(): %d" % viewID
+    if verbose() : print("PYHELLOGUI.activeViewChanged(): %d" % viewID)
     pass
 
 # called when active view is cloned
 # cloned view ID is passed as parameter
 def viewCloned( viewID ):
-    if verbose() : print "PYHELLOGUI.viewCloned(): %d" % viewID
+    if verbose() : print("PYHELLOGUI.viewCloned(): %d" % viewID)
     pass
 
 # called when active view is viewClosed
 # view ID is passed as parameter
 def viewClosed( viewID ):
-    if verbose() : print "PYHELLOGUI.viewClosed(): %d" % viewID
+    if verbose() : print("PYHELLOGUI.viewClosed(): %d" % viewID)
     pass
 
 # called when study is opened
 # returns engine IOR
 def engineIOR():
-    if verbose() : print "PYHELLOGUI.engineIOR()"
+    if verbose() : print("PYHELLOGUI.engineIOR()")
     return getEngineIOR()
 
 # called to check if object can be dragged
 # returns True if drag operation is allowed for this object
 def isDraggable(what):
-    if verbose() : print "PYHELLOGUI.isDraggable()"
+    if verbose() : print("PYHELLOGUI.isDraggable()")
     # return True if object is draggable
     return False
 
 # called to check if object allows dropping on it
 # returns True if drop operation is allowed for this object
 def isDropAccepted(where):
-    if verbose() : print "PYHELLOGUI.isDropAccepted()"
+    if verbose() : print("PYHELLOGUI.isDropAccepted()")
     # return True if object accept drops
     return False
 
@@ -367,18 +367,18 @@ def isDropAccepted(where):
 # performs corresponding data re-arrangement if allowed
 def dropObjects(what, where, row, action):
     if verbose() :
-        print "PYHELLOGUI.dropObjects()"
+        print("PYHELLOGUI.dropObjects()")
         # 'what' is a list of entries of objects being dropped
-        for i in what: print "- dropped:", i
+        for i in what: print("- dropped:", i)
         # 'where' is a parent object's entry
-        print "- dropping on:", where
+        print("- dropping on:", where)
         # 'row' is an position in the parent's children list;
         # -1 if appending to the end of children list is performed
-        print "- dropping position:", row
+        print("- dropping position:", row)
         # 'action' is a dropping action being performed:
         # - 0x01 (Qt::CopyAction) for copy
         # - 0x02 (Qt::MoveAction) for move
-        print "- drop action:", action
+        print("- drop action:", action)
         pass
     pass
 
