@@ -480,21 +480,18 @@ def initialize():
 
 \code
 def createPreferences():
-    if verbose() : print "PYHELLOGUI.createPreferences() : study : %d" % _getStudyId()
-    gid = sgPyQt.addPreference( "General" )
-    gid = sgPyQt.addPreference( "Object creation", gid )
-    pid = sgPyQt.addPreference( "Default name",  gid, SalomePyQt.PT_String,   "PYHELLO", "def_obj_name" )
-    pid = sgPyQt.addPreference( "Default creation mode", gid, SalomePyQt.PT_Selector, "PYHELLO", "creation_mode" )
-    strings = QStringList()
-    strings.append( "Default name" )
-    strings.append( "Generate name" )
-    strings.append( "Ask name" )
-    indexes = []
-    indexes.append( QVariant(0) )
-    indexes.append( QVariant(1) )
-    indexes.append( QVariant(2) )
-    sgPyQt.setPreferenceProperty( pid, "strings", QVariant( strings ) )
-    sgPyQt.setPreferenceProperty( pid, "indexes", QVariant( indexes ) )
+    if verbose():
+        print("PYHELLOGUI.createPreferences() : study : %d" % _getStudyId())
+    gid = sgPyQt.addPreference("General")
+    gid = sgPyQt.addPreference("Object creation", gid)
+    sgPyQt.addPreference("Default name", gid, SalomePyQt.PT_String, "PYHELLO", "def_obj_name")
+    pid = sgPyQt.addPreference("Default creation mode", gid, SalomePyQt.PT_Selector, "PYHELLO", "creation_mode")
+    strings = ["Default name", "Generate name", "Ask name"]
+    indexes = [0, 1, 2]
+    sgPyQt.setPreferenceProperty(pid, "strings", strings)
+    sgPyQt.setPreferenceProperty(pid, "indexes", indexes)
+    pid = sgPyQt.addPreference("Password", gid, SalomePyQt.PT_String, "PYHELLO", "Password")
+    sgPyQt.setPreferenceProperty(pid, "echo", 2)
     pass
 \endcode
 
@@ -502,7 +499,7 @@ def createPreferences():
 
 \code
 def windows():
-    if verbose() : print "PYHELLOGUI.windows() : study : %d" % _getStudyId()
+    if verbose() : print("PYHELLOGUI.windows() : study : %d" % _getStudyId())
     wm = {}
     wm[SalomePyQt.WT_ObjectBrowser] = Qt.LeftDockWidgetArea
     wm[SalomePyQt.WT_PyConsole]     = Qt.BottomDockWidgetArea

@@ -29,8 +29,7 @@ import PYHELLO_ORB__POA
 import SALOME_ComponentPy
 import SALOME_DriverPy
 import SALOMEDS
-
-from PYHELLO_utils import *
+from PYHELLO_utils import findOrCreateComponent, objectID, moduleName
 
 class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
               SALOME_ComponentPy.SALOME_ComponentPy_i,
@@ -95,25 +94,25 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
         names = []
         father = study.FindComponent( moduleName() )
         if father:
-            iter = study.NewChildIterator( father )
-            while iter.More():
-                name = iter.Value().GetName()
+            iterator = study.NewChildIterator(father)
+            while iterator.More():
+                name = iterator.Value().GetName()
                 if name: names.append( name )
-                iter.Next()
+                iterator.Next()
                 pass
             pass
         if names:
             abuffer += [ "from salome import lcc" ]
             abuffer += [ "import PYHELLO_ORB" ]
             abuffer += [ "" ]
-            abuffer += [ "pyhello = lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
+            abuffer += [ "pyhello = lcc.FindOrLoadComponent('FactoryServerPy', '%s')" % moduleName() ]
             abuffer += [ "" ]
-            abuffer += [ "pyhello.createObject( theStudy, '%s' )" % name for name in names ]
+            abuffer += [ "pyhello.createObject(theStudy, '%s')" % name for name in names ]
             abuffer += [ "" ]
             pass
         if isMultiFile:
-            abuffer       = [ "  " + s for s in abuffer ]
-            abuffer[0:0]  = [ "def RebuildData( theStudy ):" ]
-            abuffer      += [ "  pass" ]
+            abuffer = [ "  " + s for s in abuffer ]
+            abuffer[0:0] = [ "def RebuildData( theStudy ):" ]
+            abuffer += [ "    pass" ]
         abuffer += [ "\0" ]
         return ("\n".join( abuffer ), 1)

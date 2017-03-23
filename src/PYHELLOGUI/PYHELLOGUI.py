@@ -26,10 +26,19 @@
 # ---
 #
 import traceback
-import os
-from qtsalome import *
 
-from PYHELLO_utils import *
+from PYHELLO_utils import (moduleName, getStudyManager, getObjectID, verbose,
+                           moduleID, objectID, getEngineIOR, getEngine)
+from SalomePyQt import (SalomePyQt, WT_ObjectBrowser, WT_PyConsole, PT_Selector,  # @UnresolvedImport
+                        PT_String)  # @UnresolvedImport
+from qtsalome import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,  # @UnresolvedImport
+                      QPushButton, QMessageBox, QInputDialog, Qt)  # @UnresolvedImport
+from salome.kernel import termcolor
+from salome.kernel.logger import Logger
+import libSALOME_Swig
+
+
+logger = Logger(moduleName(), color=termcolor.RED_FG)
 
 ################################################
 # GUI context class
@@ -117,11 +126,9 @@ __objectid__ = 0
 ################################################
        
 # Get SALOME PyQt interface
-import SalomePyQt
-sgPyQt = SalomePyQt.SalomePyQt()
+sgPyQt = SalomePyQt()
 
 # Get SALOME Swig interface
-import libSALOME_Swig
 sg = libSALOME_Swig.SALOMEGUI_Swig()
 
 ################################################
@@ -220,8 +227,8 @@ def initialize():
 def windows():
     if verbose() : print("PYHELLOGUI.windows() : study : %d" % _getStudyId())
     wm = {}
-    wm[SalomePyQt.WT_ObjectBrowser] = Qt.LeftDockWidgetArea
-    wm[SalomePyQt.WT_PyConsole]     = Qt.BottomDockWidgetArea
+    wm[WT_ObjectBrowser] = Qt.LeftDockWidgetArea
+    wm[WT_PyConsole] = Qt.BottomDockWidgetArea
     return wm
 
 # called when module is initialized
@@ -233,23 +240,18 @@ def views():
 # called when module is initialized
 # export module's preferences
 def createPreferences():
-    if verbose() : print("PYHELLOGUI.createPreferences() : study : %d" % _getStudyId())
-    gid = sgPyQt.addPreference( "General" )
-    gid = sgPyQt.addPreference( "Object creation", gid )
-    pid = sgPyQt.addPreference( "Default name",  gid, SalomePyQt.PT_String,   "PYHELLO", "def_obj_name" )
-    pid = sgPyQt.addPreference( "Default creation mode", gid, SalomePyQt.PT_Selector, "PYHELLO", "creation_mode" )
-    strings = QStringList()
-    strings.append( "Default name" )
-    strings.append( "Generate name" )
-    strings.append( "Ask name" )
-    indexes = []
-    indexes.append( QVariant(0) )
-    indexes.append( QVariant(1) )
-    indexes.append( QVariant(2) )
-    sgPyQt.setPreferenceProperty( pid, "strings", QVariant( strings ) )
-    sgPyQt.setPreferenceProperty( pid, "indexes", QVariant( indexes ) )
-    pid = sgPyQt.addPreference( "Password",  gid, SalomePyQt.PT_String,   "PYHELLO", "Password" )
-    sgPyQt.setPreferenceProperty( pid, "echo", QVariant( 2 ) )
+    if verbose():
+        print("PYHELLOGUI.createPreferences() : study : %d" % _getStudyId())
+    gid = sgPyQt.addPreference("General")
+    gid = sgPyQt.addPreference("Object creation", gid)
+    sgPyQt.addPreference("Default name", gid, PT_String, "PYHELLO", "def_obj_name")
+    pid = sgPyQt.addPreference("Default creation mode", gid, PT_Selector, "PYHELLO", "creation_mode")
+    strings = ["Default name", "Generate name", "Ask name"]
+    indexes = [0, 1, 2]
+    sgPyQt.setPreferenceProperty(pid, "strings", strings)
+    sgPyQt.setPreferenceProperty(pid, "indexes", indexes)
+    pid = sgPyQt.addPreference("Password", gid, PT_String, "PYHELLO", "Password")
+    sgPyQt.setPreferenceProperty(pid, "echo", 2)
     pass
 
 # called when module is activated
@@ -448,33 +450,36 @@ def ShowHELLO():
 ###
 def CreateObject():
     global __objectid__
-    default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ) ).strip()
+    default_name = sgPyQt.stringSetting("PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME).strip()
     try:
-        if sgPyQt.action( GUIcontext.OPTION_3_ID ).isChecked():
+        if sgPyQt.action(GUIcontext.OPTION_3_ID).isChecked():
             # request object name from the user
-            name, ok = QInputDialog.getText( sgPyQt.getDesktop(),
-                                             "Create Object",
-                                             "Enter object name:",
-                                             QLineEdit.Normal,
-                                             default_name )
-            if not ok: return
-            name = str( name ).strip()
-        elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isChecked():
+            name, ok = QInputDialog.getText(sgPyQt.getDesktop(),
+                                                      "Create Object",
+                                                      "Enter object name:",
+                                                      QLineEdit.Normal,
+                                                      default_name)
+            if not ok:
+                return
+            name = name.strip()
+        elif sgPyQt.action(GUIcontext.OPTION_2_ID).isChecked():
             # generate object name
-            __objectid__  = __objectid__ + 1
-            name = "%s %d" % ( default_name, __objectid__ )
+            __objectid__ = __objectid__ + 1
+            name = "%s %d" % (default_name, __objectid__)
         else:
             name = default_name
             pass
         pass
-    except:
+    except Exception as e:
+        logger.debug(e)
         # generate object name
-        __objectid__  = __objectid__ + 1
-        name = "%s %d" % ( default_name, __objectid__ )
+        __objectid__ = __objectid__ + 1
+        name = "%s %d" % (default_name, __objectid__)
         pass
-    if not name: return
-    getEngine().createObject( _getStudy(), name )
-    sg.updateObjBrowser( True )
+    if not name:
+        return
+    getEngine().createObject(_getStudy(), name)
+    sg.updateObjBrowser(True)
     pass
 
 ###
