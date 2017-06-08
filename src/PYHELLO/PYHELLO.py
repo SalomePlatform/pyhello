@@ -77,22 +77,24 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     """
     Create object.
     """
-    def createObject( self, study, name ):
+    def createObject( self, name ):
+        study = getStudy()
         builder = study.NewBuilder()
-        father  = findOrCreateComponent( study )
-        object  = builder.NewObject( father )
-        attr    = builder.FindOrCreateAttribute( object, "AttributeName" )
+        father  = findOrCreateComponent()
+        obj  = builder.NewObject( father )
+        attr    = builder.FindOrCreateAttribute( obj, "AttributeName" )
         attr.SetValue( name )
-        attr    = builder.FindOrCreateAttribute( object, "AttributeLocalID" )
+        attr    = builder.FindOrCreateAttribute( obj, "AttributeLocalID" )
         attr.SetValue( objectID() )
         pass
 
     """
     Dump module data to the Python script.
     """
-    def DumpPython( self, study, isPublished, isMultiFile ):
+    def DumpPython( self, isPublished, isMultiFile ):
         abuffer = []
         names = []
+        study = getStudy()
         father = study.FindComponent( moduleName() )
         if father:
             iter = study.NewChildIterator( father )
@@ -103,17 +105,17 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
                 pass
             pass
         if names:
-            abuffer += [ "from salome import lcc" ]
+            abuffer += [ "import salome" ]
             abuffer += [ "import PYHELLO_ORB" ]
             abuffer += [ "" ]
-            abuffer += [ "pyhello = lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
+            abuffer += [ "pyhello = salome.lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
             abuffer += [ "" ]
-            abuffer += [ "pyhello.createObject( theStudy, '%s' )" % name for name in names ]
+            abuffer += [ "pyhello.createObject( '%s' )" % name for name in names ]
             abuffer += [ "" ]
             pass
         if isMultiFile:
             abuffer       = [ "  " + s for s in abuffer ]
-            abuffer[0:0]  = [ "def RebuildData( theStudy ):" ]
+            abuffer[0:0]  = [ "def RebuildData():" ]
             abuffer      += [ "  pass" ]
         abuffer += [ "\0" ]
         return ("\n".join( abuffer ), 1)
