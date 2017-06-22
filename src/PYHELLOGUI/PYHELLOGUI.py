@@ -26,10 +26,19 @@
 # ---
 #
 import traceback
-import os
-from qtsalome import *
 
-from PYHELLO_utils import *
+from PYHELLO_utils import (moduleName, getStudyManager, getObjectID, verbose,
+                           moduleID, objectID, getEngineIOR, getEngine)
+from SalomePyQt import (SalomePyQt, WT_ObjectBrowser, WT_PyConsole, PT_Selector,  # @UnresolvedImport
+                        PT_String)  # @UnresolvedImport
+from qtsalome import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,  # @UnresolvedImport
+                      QPushButton, QMessageBox, QInputDialog, Qt)  # @UnresolvedImport
+from salome.kernel import termcolor
+from salome.kernel.logger import Logger
+import libSALOME_Swig
+
+
+logger = Logger(moduleName(), color=termcolor.RED_FG)
 
 import salome
 
@@ -115,11 +124,9 @@ __objectid__ = 0
 ################################################
        
 # Get SALOME PyQt interface
-import SalomePyQt
-sgPyQt = SalomePyQt.SalomePyQt()
+sgPyQt = SalomePyQt()
 
 # Get SALOME Swig interface
-import libSALOME_Swig
 sg = libSALOME_Swig.SALOMEGUI_Swig()
 
 ################################################
@@ -169,7 +176,7 @@ def _getSelection():
 # called when module is initialized
 # perform initialization actions
 def initialize():
-    if verbose() : print "PYHELLOGUI.initialize()"
+    if verbose() : print("PYHELLOGUI.initialize()")
     # set default preferences values
     if not sgPyQt.hasSetting( "PYHELLO", "def_obj_name"):
         sgPyQt.addSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME )
@@ -182,58 +189,53 @@ def initialize():
 # called when module is initialized
 # return map of popup windows to be used by the module
 def windows():
-    if verbose() : print "PYHELLOGUI.windows()"
+    if verbose() : print("PYHELLOGUI.windows()")
     wm = {}
-    wm[SalomePyQt.WT_ObjectBrowser] = Qt.LeftDockWidgetArea
-    wm[SalomePyQt.WT_PyConsole]     = Qt.BottomDockWidgetArea
+    wm[WT_ObjectBrowser] = Qt.LeftDockWidgetArea
+    wm[WT_PyConsole] = Qt.BottomDockWidgetArea
     return wm
 
 # called when module is initialized
 # return list of 2d/3d views to be used ny the module
 def views():
-    if verbose() : print "PYHELLOGUI.views()"
+    if verbose() : print("PYHELLOGUI.views()")
     return []
 
 # called when module is initialized
 # export module's preferences
 def createPreferences():
-    if verbose() : print "PYHELLOGUI.createPreferences()"
-    gid = sgPyQt.addPreference( "General" )
-    gid = sgPyQt.addPreference( "Object creation", gid )
-    pid = sgPyQt.addPreference( "Default name",  gid, SalomePyQt.PT_String,   "PYHELLO", "def_obj_name" )
-    pid = sgPyQt.addPreference( "Default creation mode", gid, SalomePyQt.PT_Selector, "PYHELLO", "creation_mode" )
-    strings = QStringList()
-    strings.append( "Default name" )
-    strings.append( "Generate name" )
-    strings.append( "Ask name" )
-    indexes = []
-    indexes.append( QVariant(0) )
-    indexes.append( QVariant(1) )
-    indexes.append( QVariant(2) )
-    sgPyQt.setPreferenceProperty( pid, "strings", QVariant( strings ) )
-    sgPyQt.setPreferenceProperty( pid, "indexes", QVariant( indexes ) )
-    pid = sgPyQt.addPreference( "Password",  gid, SalomePyQt.PT_String,   "PYHELLO", "Password" )
-    sgPyQt.setPreferenceProperty( pid, "echo", QVariant( 2 ) )
+    if verbose():
+        print("PYHELLOGUI.createPreferences()")
+    gid = sgPyQt.addPreference("General")
+    gid = sgPyQt.addPreference("Object creation", gid)
+    sgPyQt.addPreference("Default name", gid, PT_String, "PYHELLO", "def_obj_name")
+    pid = sgPyQt.addPreference("Default creation mode", gid, PT_Selector, "PYHELLO", "creation_mode")
+    strings = ["Default name", "Generate name", "Ask name"]
+    indexes = [0, 1, 2]
+    sgPyQt.setPreferenceProperty(pid, "strings", strings)
+    sgPyQt.setPreferenceProperty(pid, "indexes", indexes)
+    pid = sgPyQt.addPreference("Password", gid, PT_String, "PYHELLO", "Password")
+    sgPyQt.setPreferenceProperty(pid, "echo", 2)
     pass
 
 # called when module is activated
 # returns True if activating is successfull and False otherwise
 def activate():
-    if verbose() : print "PYHELLOGUI.activate()"
+    if verbose() : print("PYHELLOGUI.activate()")
     GUIcontext()
     return True
 
 # called when module is deactivated
 def deactivate():
-    if verbose() : print "PYHELLOGUI.deactivate()"
+    if verbose() : print("PYHELLOGUI.deactivate()")
     pass
 
 # called when popup menu is invoked
 # popup menu and menu context are passed as parameters
 def createPopupMenu( popup, context ):
-    if verbose() : print "PYHELLOGUI.createPopupMenu(): context = %s" % context
+    if verbose() : print("PYHELLOGUI.createPopupMenu(): context = %s" % context)
     selcount, selected = _getSelection()
-    if verbose() : print selcount, selected
+    if verbose() : print(selcount, selected)
     if selcount == 1:
         # one object is selected
         if moduleID() in selected:
@@ -264,57 +266,57 @@ def createPopupMenu( popup, context ):
 # called when GUI action is activated
 # action ID is passed as parameter
 def OnGUIEvent( commandID ):
-    if verbose() : print "PYHELLOGUI.OnGUIEvent(): command = %d" % commandID
-    if dict_command.has_key( commandID ):
+    if verbose() : print("PYHELLOGUI.OnGUIEvent(): command = %d" % commandID)
+    if commandID in dict_command:
         try:
             dict_command[commandID]()
         except:
             traceback.print_exc()
     else:
-        if verbose() : print "The command is not implemented: %d" % commandID
+        if verbose() : print("The command is not implemented: %d" % commandID)
     pass
 
 # called when module's preferences are changed
 # preference's resources section and setting name are passed as parameters
 def preferenceChanged( section, setting ):
-    if verbose() : print "PYHELLOGUI.preferenceChanged(): %s / %s" % ( section, setting )
+    if verbose() : print("PYHELLOGUI.preferenceChanged(): %s / %s" % ( section, setting ))
     pass
 
 # called when active view is changed
 # view ID is passed as parameter
 def activeViewChanged( viewID ):
-    if verbose() : print "PYHELLOGUI.activeViewChanged(): %d" % viewID
+    if verbose() : print("PYHELLOGUI.activeViewChanged(): %d" % viewID)
     pass
 
 # called when active view is cloned
 # cloned view ID is passed as parameter
 def viewCloned( viewID ):
-    if verbose() : print "PYHELLOGUI.viewCloned(): %d" % viewID
+    if verbose() : print("PYHELLOGUI.viewCloned(): %d" % viewID)
     pass
 
 # called when active view is viewClosed
 # view ID is passed as parameter
 def viewClosed( viewID ):
-    if verbose() : print "PYHELLOGUI.viewClosed(): %d" % viewID
+    if verbose() : print("PYHELLOGUI.viewClosed(): %d" % viewID)
     pass
 
 # called when study is opened
 # returns engine IOR
 def engineIOR():
-    if verbose() : print "PYHELLOGUI.engineIOR()"
+    if verbose() : print("PYHELLOGUI.engineIOR()")
     return getEngineIOR()
 
 # called to check if object can be dragged
 # returns True if drag operation is allowed for this object
 def isDraggable(what):
-    if verbose() : print "PYHELLOGUI.isDraggable()"
+    if verbose() : print("PYHELLOGUI.isDraggable()")
     # return True if object is draggable
     return False
 
 # called to check if object allows dropping on it
 # returns True if drop operation is allowed for this object
 def isDropAccepted(where):
-    if verbose() : print "PYHELLOGUI.isDropAccepted()"
+    if verbose() : print("PYHELLOGUI.isDropAccepted()")
     # return True if object accept drops
     return False
 
@@ -322,18 +324,18 @@ def isDropAccepted(where):
 # performs corresponding data re-arrangement if allowed
 def dropObjects(what, where, row, action):
     if verbose() :
-        print "PYHELLOGUI.dropObjects()"
+        print("PYHELLOGUI.dropObjects()")
         # 'what' is a list of entries of objects being dropped
-        for i in what: print "- dropped:", i
+        for i in what: print("- dropped:", i)
         # 'where' is a parent object's entry
-        print "- dropping on:", where
+        print("- dropping on:", where)
         # 'row' is an position in the parent's children list;
         # -1 if appending to the end of children list is performed
-        print "- dropping position:", row
+        print("- dropping position:", row)
         # 'action' is a dropping action being performed:
         # - 0x01 (Qt::CopyAction) for copy
         # - 0x02 (Qt::MoveAction) for move
-        print "- drop action:", action
+        print("- drop action:", action)
         pass
     pass
 
@@ -403,32 +405,35 @@ def ShowHELLO():
 ###
 def CreateObject():
     global __objectid__
-    default_name = str( sgPyQt.stringSetting( "PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME ) ).strip()
+    default_name = sgPyQt.stringSetting("PYHELLO", "def_obj_name", GUIcontext.DEFAULT_NAME).strip()
     try:
-        if sgPyQt.action( GUIcontext.OPTION_3_ID ).isChecked():
+        if sgPyQt.action(GUIcontext.OPTION_3_ID).isChecked():
             # request object name from the user
-            name, ok = QInputDialog.getText( sgPyQt.getDesktop(),
-                                             "Create Object",
-                                             "Enter object name:",
-                                             QLineEdit.Normal,
-                                             default_name )
-            if not ok: return
-            name = str( name ).strip()
-        elif sgPyQt.action( GUIcontext.OPTION_2_ID ).isChecked():
+            name, ok = QInputDialog.getText(sgPyQt.getDesktop(),
+                                                      "Create Object",
+                                                      "Enter object name:",
+                                                      QLineEdit.Normal,
+                                                      default_name)
+            if not ok:
+                return
+            name = name.strip()
+        elif sgPyQt.action(GUIcontext.OPTION_2_ID).isChecked():
             # generate object name
-            __objectid__  = __objectid__ + 1
-            name = "%s %d" % ( default_name, __objectid__ )
+            __objectid__ = __objectid__ + 1
+            name = "%s %d" % (default_name, __objectid__)
         else:
             name = default_name
             pass
         pass
-    except:
+    except Exception as e:
+        logger.debug(e)
         # generate object name
-        __objectid__  = __objectid__ + 1
-        name = "%s %d" % ( default_name, __objectid__ )
+        __objectid__ = __objectid__ + 1
+        name = "%s %d" % (default_name, __objectid__)
         pass
-    if not name: return
-    getEngine().createObject( name )
+    if not name:
+        return
+    getEngine().createObject( name)
     sg.updateObjBrowser()
     pass
 

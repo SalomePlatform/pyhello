@@ -136,7 +136,7 @@ __study__ = None
 def getStudy():
     global __study__
     if __study__ is None:
-	obj = getNS().Resolve( '/Study' )
+        obj = getNS().Resolve( '/Study' )
         __study__ = obj._narrow( SALOMEDS.Study )
         pass
     return __study__
