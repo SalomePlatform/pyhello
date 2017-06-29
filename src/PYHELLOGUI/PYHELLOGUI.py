@@ -27,7 +27,7 @@
 #
 import traceback
 
-from PYHELLO_utils import (moduleName, getStudyManager, getObjectID, verbose,
+from PYHELLO_utils import (moduleName, getObjectID, verbose,
                            moduleID, objectID, getEngineIOR, getEngine)
 from SalomePyQt import (SalomePyQt, WT_ObjectBrowser, WT_PyConsole, PT_Selector,  # @UnresolvedImport
                         PT_String)  # @UnresolvedImport

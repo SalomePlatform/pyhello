@@ -29,7 +29,7 @@ import PYHELLO_ORB__POA
 import SALOME_ComponentPy
 import SALOME_DriverPy
 import SALOMEDS
-from PYHELLO_utils import findOrCreateComponent, objectID, moduleName
+from PYHELLO_utils import findOrCreateComponent, objectID, moduleName, getStudy
 
 class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
               SALOME_ComponentPy.SALOME_ComponentPy_i,
@@ -117,4 +117,5 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
             abuffer[0:0] = [ "def RebuildData():" ]
             abuffer += [ "    pass" ]
         abuffer += [ "\0" ]
-        return ("\n".join( abuffer ), 1)
+        res = "\n".join( abuffer )
+        return (res.encode(), 1)
