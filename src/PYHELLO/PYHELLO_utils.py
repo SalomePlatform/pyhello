@@ -32,12 +32,13 @@ __all__ = [
     "getORB",
     "getNS",
     "getLCC",
-    "getStudyManager",
     "getEngine",
+    "getStudy",
     "getEngineIOR",
     "findOrCreateComponent",
     "getObjectID",
     ]
+
 
 from omniORB import CORBA
 from SALOME_NamingServicePy import SALOME_NamingServicePy_i
@@ -129,16 +130,16 @@ def getLCC():
     return __lcc__
 
 ##
-# Get study manager
+# Get study
 ###
-__study_manager__ = None
-def getStudyManager():
-    global __study_manager__
-    if __study_manager__ is None:
-        obj = getNS().Resolve( '/myStudyManager' )
-        __study_manager__ = obj._narrow( SALOMEDS.StudyManager )
+__study__ = None
+def getStudy():
+    global __study__
+    if __study__ is None:
+        obj = getNS().Resolve( '/Study' )
+        __study__ = obj._narrow( SALOMEDS.Study )
         pass
-    return __study_manager__
+    return __study__
 
 ###
 # Get PYHELLO engine
@@ -164,8 +165,9 @@ def getEngineIOR():
 ###
 # Find or create PYHELLO component object in a study
 ###
-def findOrCreateComponent( study ):
-    father = study.FindComponent( moduleName() )
+def findOrCreateComponent():
+    study = getStudy()
+    father =study.FindComponent( moduleName() )
     if father is None:
         builder = study.NewBuilder()
         father = builder.NewComponent( moduleName() )
@@ -186,9 +188,10 @@ def findOrCreateComponent( study ):
 ###
 # Get object's ID
 ###
-def getObjectID( study, entry ):
+def getObjectID( entry ):
     ID = unknownID()
-    if study and entry:
+    study = getStudy()
+    if entry:
         sobj = study.FindObjectID( entry )
         if sobj is not None:
             test, anAttr = sobj.FindAttribute( "AttributeLocalID" )

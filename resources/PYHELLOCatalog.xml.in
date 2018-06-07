@@ -39,7 +39,6 @@
             <component-author>SALOME team</component-author>
             <component-version>@SALOMEPYHELLO_VERSION@</component-version>
             <component-comment></component-comment>
-            <component-multistudy>1</component-multistudy>
             <component-impltype>1</component-impltype>
             <component-icone>PYHELLO.png</component-icone>
             <constraint></constraint>
@@ -79,11 +78,6 @@
                         <service-comment>unknown</service-comment>
                         <service-by-default>0</service-by-default>
                         <inParameter-list>
-                            <inParameter>
-                                <inParameter-name>theStudy</inParameter-name>
-                                <inParameter-type>Study</inParameter-type>
-                                <inParameter-comment>unknown</inParameter-comment>
-                            </inParameter>
                             <inParameter>
                                 <inParameter-name>name</inParameter-name>
                                 <inParameter-type>string</inParameter-type>
