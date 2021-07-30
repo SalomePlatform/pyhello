@@ -27,6 +27,7 @@
 #
 import PYHELLO_ORB__POA
 import SALOME_ComponentPy
+import SALOME_Embedded_NamingService_ClientPy
 import SALOME_DriverPy
 import SALOMEDS
 from PYHELLO_utils import findOrCreateComponent, objectID, moduleName, getStudy
@@ -47,9 +48,17 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
                     contID, containerName, instanceName, interfaceName, False)
         SALOME_DriverPy.SALOME_DriverPy_i.__init__(self, interfaceName)
         #
-        self._naming_service = SALOME_ComponentPy.SALOME_NamingServicePy_i( self._orb )
+        emb_ns = self._contId.get_embedded_NS_if_ssl()
+        import CORBA
+        if CORBA.is_nil(emb_ns):
+            self._naming_service = SALOME_ComponentPy.SALOME_NamingServicePy_i( self._orb )
+        else:
+            self._naming_service = SALOME_Embedded_NamingService_ClientPy.SALOME_Embedded_NamingService_ClientPy(emb_ns)
         #
         pass
+
+    def getNamingService(self):
+        return self._naming_service
 
     """
     Get version information.
@@ -77,7 +86,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     Create object.
     """
     def createObject( self, name ):
-        study = getStudy()
+        study = getStudy( self._naming_service )
         builder = study.NewBuilder()
         father  = findOrCreateComponent()
         obj  = builder.NewObject( father )

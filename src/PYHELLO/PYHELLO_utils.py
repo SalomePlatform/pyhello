@@ -30,7 +30,6 @@ __all__ = [
     "modulePixmap",
     "verbose",
     "getORB",
-    "getNS",
     "getLCC",
     "getEngine",
     "getStudy",
@@ -107,17 +106,6 @@ def getORB():
         pass
     return __orb__
 
-###
-# Get naming service instance
-###
-__naming_service__ = None
-def getNS():
-    global __naming_service__
-    if __naming_service__ is None:
-        __naming_service__ = SALOME_NamingServicePy_i( getORB() )
-        pass
-    return __naming_service__
-
 ##
 # Get life cycle CORBA instance
 ##
@@ -136,7 +124,7 @@ __study__ = None
 def getStudy():
     global __study__
     if __study__ is None:
-        obj = getNS().Resolve( '/Study' )
+        obj = __engine__.getNamingService().Resolve( '/Study' )
         __study__ = obj._narrow( SALOMEDS.Study )
         pass
     return __study__
@@ -148,7 +136,19 @@ __engine__ = None
 def getEngine():
     global __engine__
     if __engine__ is None:
-        __engine__ = getLCC().FindOrLoadComponent( "FactoryServerPy", moduleName() )
+        import KernelBasis
+        if KernelBasis.getSSLMode():
+            import salome
+            import PYHELLO
+            from SALOME_ContainerPy import SALOME_ContainerPy_SSL_i
+            poa = salome.orb.resolve_initial_references("RootPOA")
+            poaManager = poa._get_the_POAManager()
+            poaManager.activate()
+            cpy_i = SALOME_ContainerPy_SSL_i(salome.orb, poa, "FactoryServerPy")
+            cpy_ref = cpy_i._this()
+            __engine__ = PYHELLO.PYHELLO(salome.orb,poa,cpy_ref,"FactoryServerPy", "PYHELLO_inst_2" , moduleName())
+        else:
+            __engine__ = getLCC().FindOrLoadComponent( "FactoryServerPy", moduleName() )
         pass
     return __engine__
 
