@@ -1,4 +1,5 @@
-# Copyright (C) 2012-2021  CEA/DEN, EDF R&D, OPEN CASCADE
+#  -*- coding: iso-8859-1 -*-
+# Copyright (C) 2021  CEA/DEN, EDF R&D
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,14 +18,25 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# --- scripts ---
-
-# scripts / static
-SET(_bin_SCRIPTS
-  PYHELLO.py
-  PYHELLO_utils.py
-  PYHELLO_SalomeSessionless.py
-)
-
-# --- rules ---
-SALOME_INSTALL_SCRIPTS("${_bin_SCRIPTS}" ${SALOME_INSTALL_SCRIPT_PYTHON})
+def buildInstance(orb):
+    import KernelBasis
+    KernelBasis.setSSLMode(True)
+    from PYHELLO import PYHELLO
+    from SALOME_ContainerPy import SALOME_ContainerPy_SSL_i
+    import PortableServer
+    import KernelServices
+    obj = orb.resolve_initial_references("RootPOA")
+    poa = obj._narrow(PortableServer.POA)
+    pman = poa._get_the_POAManager()
+    #
+    cont = SALOME_ContainerPy_SSL_i(orb,poa,"FactoryServer")
+    conId = poa.activate_object(cont)
+    conObj = poa.id_to_reference(conId)
+    #
+    pman.activate()
+    #
+    compoName = "PYHELLO"
+    servant = PYHELLO(orb,poa,conObj,"FactoryServer","PYHELLO_inst_1",compoName)
+    ret = servant.getCorbaRef()
+    KernelServices.RegisterCompo(compoName,ret)
+    return ret, orb
