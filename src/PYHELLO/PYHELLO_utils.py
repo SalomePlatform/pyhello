@@ -42,6 +42,7 @@ __all__ = [
 from omniORB import CORBA
 from SALOME_NamingServicePy import SALOME_NamingServicePy_i
 from LifeCycleCORBA import LifeCycleCORBA
+import salome
 import SALOMEDS
 import SALOMEDS_Attributes_idl
 import PYHELLO_ORB
@@ -98,36 +99,23 @@ def verbose():
 ###
 # Get ORB reference
 ###
-__orb__ = None
 def getORB():
-    global __orb__
-    if __orb__ is None:
-        __orb__ = CORBA.ORB_init( [''], CORBA.ORB_ID )
-        pass
-    return __orb__
+    salome.salome_init()
+    return salome.orb
 
 ##
 # Get life cycle CORBA instance
 ##
-__lcc__ = None
 def getLCC():
-    global __lcc__
-    if __lcc__ is None:
-        __lcc__ = LifeCycleCORBA( getORB() )
-        pass
-    return __lcc__
+    salome.salome_init()
+    return salome.lcc
 
 ##
 # Get study
 ###
-__study__ = None
 def getStudy():
-    global __study__
-    if __study__ is None:
-        obj = __engine__.getNamingService().Resolve( '/Study' )
-        __study__ = obj._narrow( SALOMEDS.Study )
-        pass
-    return __study__
+    salome.salome_init()
+    return salome.myStudy
 
 ###
 # Get PYHELLO engine
@@ -136,19 +124,7 @@ __engine__ = None
 def getEngine():
     global __engine__
     if __engine__ is None:
-        import KernelBasis
-        if KernelBasis.getSSLMode():
-            import salome
-            import PYHELLO
-            from SALOME_ContainerPy import SALOME_ContainerPy_SSL_i
-            poa = salome.orb.resolve_initial_references("RootPOA")
-            poaManager = poa._get_the_POAManager()
-            poaManager.activate()
-            cpy_i = SALOME_ContainerPy_SSL_i(salome.orb, poa, "FactoryServerPy")
-            cpy_ref = cpy_i._this()
-            __engine__ = PYHELLO.PYHELLO(salome.orb,poa,cpy_ref,"FactoryServerPy", "PYHELLO_inst_2" , moduleName())
-        else:
-            __engine__ = getLCC().FindOrLoadComponent( "FactoryServerPy", moduleName() )
+        __engine__ = getLCC().FindOrLoadComponent( "FactoryServerPy", moduleName() )
         pass
     return __engine__
 
