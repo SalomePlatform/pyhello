@@ -28,7 +28,7 @@ def buildInstance(orb):
     # check if PYHELLO is already registered
     import KernelServices
     try:
-        return pyhello, orb
+        return KernelServices.RetrieveCompo("PYHELLO"), orb
     except Exception:
         pass
 
