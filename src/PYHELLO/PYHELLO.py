@@ -54,11 +54,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
             self._naming_service = SALOME_ComponentPy.SALOME_NamingServicePy_i( self._orb )
         else:
             self._naming_service = SALOME_Embedded_NamingService_ClientPy.SALOME_Embedded_NamingService_ClientPy(emb_ns)
-        #
         pass
-
-    def getNamingService(self):
-        return self._naming_service
 
     """
     Get version information.
@@ -86,7 +82,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     Create object.
     """
     def createObject( self, name ):
-        study = getStudy( self._naming_service )
+        study = getStudy()
         builder = study.NewBuilder()
         father  = findOrCreateComponent()
         obj  = builder.NewObject( father )

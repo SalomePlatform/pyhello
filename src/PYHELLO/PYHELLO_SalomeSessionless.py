@@ -19,24 +19,31 @@
 #
 
 def buildInstance(orb):
+    from PYHELLO import PYHELLO
+
+    # set SSL mode, if not done yes
     import KernelBasis
     KernelBasis.setSSLMode(True)
-    from PYHELLO import PYHELLO
-    from SALOME_ContainerPy import SALOME_ContainerPy_SSL_i
-    import PortableServer
+
+    # check if PYHELLO is already registered
     import KernelServices
+    try:
+        return KernelServices.RetrieveCompo("PYHELLO"), orb
+    except Exception:
+        pass
+
+    # initialize and register PYHELLO engine
+    import PortableServer
     obj = orb.resolve_initial_references("RootPOA")
     poa = obj._narrow(PortableServer.POA)
     pman = poa._get_the_POAManager()
-    #
-    cont = SALOME_ContainerPy_SSL_i(orb,poa,"FactoryServer")
-    conId = poa.activate_object(cont)
-    conObj = poa.id_to_reference(conId)
-    #
     pman.activate()
     #
-    compoName = "PYHELLO"
-    servant = PYHELLO(orb,poa,conObj,"FactoryServer","PYHELLO_inst_1",compoName)
+    from SALOME_ContainerPy import SALOME_ContainerPy_SSL_i
+    cont = SALOME_ContainerPy_SSL_i(orb, poa, "FactoryServer")
+    conObj = poa.id_to_reference(poa.activate_object(cont))
+    #
+    servant = PYHELLO(orb, poa, conObj, "FactoryServer", "PYHELLO_inst_1", "PYHELLO")
     ret = servant.getCorbaRef()
-    KernelServices.RegisterCompo(compoName,ret)
+    KernelServices.RegisterCompo("PYHELLO", ret)
     return ret, orb
