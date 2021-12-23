@@ -112,7 +112,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
             abuffer += [ "import salome" ]
             abuffer += [ "import PYHELLO_ORB" ]
             abuffer += [ "" ]
-            abuffer += [ "pyhello = salome.lcc.FindOrLoadComponent( 'FactoryServerPy', '%s' )" % moduleName() ]
+            abuffer += [ "pyhello = salome.lcc.FindOrLoadComponent( 'FactoryServer', '%s' )" % moduleName() ]
             abuffer += [ "" ]
             abuffer += [ "pyhello.createObject( '%s')" % name for name in names ]
             abuffer += [ "" ]
