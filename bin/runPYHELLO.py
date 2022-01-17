@@ -30,7 +30,7 @@ def test(clt):
    import LifeCycleCORBA 
    lcc = LifeCycleCORBA.LifeCycleCORBA(clt.orb)
    import PYHELLO_ORB
-   pyhello = lcc.FindOrLoadComponent("FactoryServerPy", "PYHELLO")
+   pyhello = lcc.FindOrLoadComponent("FactoryServer", "PYHELLO")
    return pyhello
 
 #
@@ -51,4 +51,4 @@ if __name__ == "__main__":
      session=clt.waitNS("/Kernel/Session")
      catalog=clt.waitNS("/Kernel/ModulCatalog")
      import socket
-     container =  clt.waitNS("/Containers/" + socket.gethostname().split('.')[0] + "/FactoryServerPy")
+     container =  clt.waitNS("/Containers/" + socket.gethostname().split('.')[0] + "/FactoryServer")
