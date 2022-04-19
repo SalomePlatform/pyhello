@@ -23,7 +23,6 @@
 SET(_bin_SCRIPTS
   PYHELLO.py
   PYHELLO_utils.py
-  PYHELLO_SalomeSessionless.py
 )
 
 # --- rules ---
