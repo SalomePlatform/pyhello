@@ -29,7 +29,7 @@ def test(clt):
    # create an LifeCycleCORBA instance
    import LifeCycleCORBA 
    lcc = LifeCycleCORBA.LifeCycleCORBA(clt.orb)
-   import PYHELLO_ORB
+   from salome.kernel import PYHELLO_ORB
    pyhello = lcc.FindOrLoadComponent("FactoryServer", "PYHELLO")
    return pyhello
 

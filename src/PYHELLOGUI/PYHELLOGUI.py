@@ -33,14 +33,14 @@ from SalomePyQt import (SalomePyQt, WT_ObjectBrowser, WT_PyConsole, PT_Selector,
                         PT_String)  # @UnresolvedImport
 from qtsalome import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,  # @UnresolvedImport
                       QPushButton, QMessageBox, QInputDialog, Qt)  # @UnresolvedImport
-from salome.kernel import termcolor
-from salome.kernel.logger import Logger
+from salome.kernel.salome.kernel import termcolor
+from salome.kernel.salome.kernel.logger import Logger
 import libSALOME_Swig
 
 
 logger = Logger(moduleName(), color=termcolor.RED_FG)
 
-import salome
+from salome.kernel import salome
 
 ################################################
 # GUI context class

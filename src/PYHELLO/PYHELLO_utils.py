@@ -39,13 +39,13 @@ __all__ = [
     ]
 
 
-from omniORB import CORBA
-from SALOME_NamingServicePy import SALOME_NamingServicePy_i
-from LifeCycleCORBA import LifeCycleCORBA
-import salome
-import SALOMEDS
-import SALOMEDS_Attributes_idl
-import PYHELLO_ORB
+#from omniORB import CORBA
+#from salome.kernel.SALOME_NamingServicePy import SALOME_NamingServicePy_i
+#from salome.kernel.LifeCycleCORBA import LifeCycleCORBA
+#
+import salome.kernel.SALOMEDS
+#import salome.kernel.SALOMEDS_Attributes_idl
+from salome.kernel import PYHELLO_ORB
 import os
 
 ###
@@ -100,6 +100,7 @@ def verbose():
 # Get ORB reference
 ###
 def getORB():
+    from salome.kernel import salome
     salome.salome_init()
     return salome.orb
 
@@ -107,6 +108,7 @@ def getORB():
 # Get life cycle CORBA instance
 ##
 def getLCC():
+    from salome.kernel import salome
     salome.salome_init()
     return salome.lcc
 
@@ -114,6 +116,7 @@ def getLCC():
 # Get study
 ###
 def getStudy():
+    from salome.kernel import salome
     salome.salome_init()
     return salome.myStudy
 
@@ -171,7 +174,7 @@ def getObjectID( entry ):
         sobj = study.FindObjectID( entry )
         if sobj is not None:
             test, anAttr = sobj.FindAttribute( "AttributeLocalID" )
-            if test: ID = anAttr._narrow( SALOMEDS.AttributeLocalID ).Value()
+            if test: ID = anAttr._narrow( salome.kernel.SALOMEDS.AttributeLocalID ).Value()
             pass
         pass
     return ID

@@ -25,11 +25,11 @@
 # Author : Vadim SANDLER, Open CASCADE S.A.S. (vadim.sandler@opencascade.com)
 # ---
 #
-import PYHELLO_ORB__POA
-import SALOME_ComponentPy
-import SALOME_Embedded_NamingService_ClientPy
-import SALOME_DriverPy
-import SALOMEDS
+from salome.kernel import PYHELLO_ORB__POA
+from salome.kernel import SALOME_ComponentPy
+from salome.kernel import SALOME_Embedded_NamingService_ClientPy
+from salome.kernel import SALOME_DriverPy
+from salome.kernel import SALOMEDS
 from PYHELLO_utils import findOrCreateComponent, objectID, moduleName, getStudy
 
 class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
@@ -60,7 +60,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     Get version information.
     """
     def getVersion( self ):
-        import salome_version
+        from salome.kernel import salome_version
         return salome_version.getVersion("PYHELLO", True)
 
     """
@@ -74,7 +74,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     Intentionnally raises an exception for test purposes.
     """
     def raiseAnException( self ):
-        import SALOME
+        from salome.kernel import SALOME
         exData = SALOME.ExceptionStruct( SALOME.BAD_PARAM, "Test exception in raiseAnException()",'',0)
         raise SALOME.SALOME_Exception( exData )
 
@@ -109,7 +109,7 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
                 pass
             pass
         if names:
-            abuffer += [ "import salome" ]
+            abuffer += [ "from salome.engine import salome" ]
             abuffer += [ "import PYHELLO_ORB" ]
             abuffer += [ "" ]
             abuffer += [ "pyhello = salome.lcc.FindOrLoadComponent( 'FactoryServer', '%s' )" % moduleName() ]

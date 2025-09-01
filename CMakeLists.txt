@@ -86,6 +86,7 @@ ENDIF()
 FIND_PACKAGE(SalomePythonInterp REQUIRED)
 FIND_PACKAGE(SalomePythonLibs REQUIRED)
 FIND_PACKAGE(SalomeOmniORB REQUIRED)
+#list(APPEND OMNIORB_IDLPYFLAGS -Wbextern=SALOME_GenericObj -Wbextern=SALOME_Exception -Wbextern=SALOMEDS -Wbextern=SALOME_Comm -Wbextern=SALOME_PyNode -Wbextern=SALOME_Embedded_NamingService -Wbextern=SALOME_Component )
 FIND_PACKAGE(SalomeOmniORBPy REQUIRED)
 
 # Find GUI
