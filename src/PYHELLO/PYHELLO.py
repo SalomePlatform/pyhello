@@ -74,9 +74,9 @@ class PYHELLO(PYHELLO_ORB__POA.PYHELLO_Gen,
     Intentionnally raises an exception for test purposes.
     """
     def raiseAnException( self ):
-        from salome.kernel import SALOME
-        exData = SALOME.ExceptionStruct( SALOME.BAD_PARAM, "Test exception in raiseAnException()",'',0)
-        raise SALOME.SALOME_Exception( exData )
+        from salome.kernel import SALOME_CMOD
+        exData = SALOME_CMOD.ExceptionStruct( SALOME_CMOD.BAD_PARAM, "Test exception in raiseAnException()",'',0)
+        raise SALOME_CMOD.SALOME_Exception( exData )
 
     """
     Create object.

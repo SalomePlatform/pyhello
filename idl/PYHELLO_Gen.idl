@@ -37,13 +37,13 @@ module PYHELLO_ORB
   interface PYHELLO_Gen : Engines::EngineComponent, SALOMEDS::Driver
   {
     string makeBanner(in string name)
-      raises (SALOME::SALOME_Exception);
+      raises (SALOME_CMOD::SALOME_Exception);
     
     void createObject(in string name)
-      raises (SALOME::SALOME_Exception);
+      raises (SALOME_CMOD::SALOME_Exception);
     
     void raiseAnException()
-      raises (SALOME::SALOME_Exception);
+      raises (SALOME_CMOD::SALOME_Exception);
   };
 };
 
