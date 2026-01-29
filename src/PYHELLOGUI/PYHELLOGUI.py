@@ -29,10 +29,15 @@ import traceback
 
 from PYHELLO_utils import (moduleName, getObjectID, verbose,
                            moduleID, objectID, getEngineIOR, getEngine)
-from SalomePyQt import (SalomePyQt, WT_ObjectBrowser, WT_PyConsole, PT_Selector,  # @UnresolvedImport
+from SalomePyQt import (usePySide, SalomePyQt, WT_ObjectBrowser, WT_PyConsole, PT_Selector,  # @UnresolvedImport
                         PT_String)  # @UnresolvedImport
-from qtsalome import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,  # @UnresolvedImport
-                      QPushButton, QMessageBox, QInputDialog, Qt)  # @UnresolvedImport
+if usePySide():
+  from PySide2.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,  # @UnresolvedImport
+                                 QPushButton, QMessageBox, QInputDialog)  # @UnresolvedImport
+  from PySide2.QtCore import Qt
+else:
+  from PyQt5.Qt import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,  # @UnresolvedImport
+                        QPushButton, QMessageBox, QInputDialog, Qt)  # @UnresolvedImport
 from salome.kernel.salome.kernel import termcolor
 from salome.kernel.salome.kernel.logger import Logger
 import libSALOME_Swig
